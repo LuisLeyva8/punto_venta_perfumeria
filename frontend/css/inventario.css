@@ -1,0 +1,80 @@
+.inventario-panel {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    max-width: 700px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .inventario-panel h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .barra-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .barra-acciones button {
+    background-color: #e5e7eb;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .barra-acciones .activo {
+    background-color: #8b5cf6;
+    color: white;
+  }
+  
+  .form-inventario {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .grupo-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .grupo-form label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+  
+  .grupo-form input {
+    padding: 0.6rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  
+  .acciones-form {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  .btn-confirmar {
+    background-color: #8b5cf6;
+    color: white;
+    padding: 0.8rem 2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .btn-confirmar:hover {
+    background-color: #7c3aed;
+  }

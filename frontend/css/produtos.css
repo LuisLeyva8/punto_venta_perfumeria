@@ -1,0 +1,108 @@
+.productos-panel {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  max-width: 700px;
+  margin: auto;
+}
+
+.productos-panel h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.grupo-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.grupo-form label {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.grupo-form input,
+.grupo-form select {
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.radios {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.departamento-flex {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.departamento-flex button.secundario {
+  padding: 0.5rem 1rem;
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.inventario {
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.inventario legend {
+  font-weight: bold;
+  padding: 0 0.5rem;
+}
+
+.inventario label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.acciones-form {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.btn-guardar {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-cancelar {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.mensaje-status {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background-color: #ecfdf5;
+  color: #065f46;
+  border-left: 5px solid #10b981;
+  border-radius: 6px;
+  font-weight: 500;
+}

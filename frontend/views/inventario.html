@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="/frontend/css/inventario.css" />
+
+
+<section class="inventario-panel">
+  <h2>Agregar Inventario</h2>
+
+  <div class="barra-acciones">
+    <button class="activo">Agregar a Inventario</button>
+    <button>Ajustes</button>
+    <button>Productos Bajos</button>
+    <button>Reporte de Inventario</button>
+    <button>Reporte de Movimientos</button>
+  </div>
+
+  <form class="form-inventario">
+    <div class="grupo-form">
+      <label for="codigoProducto">Código del Producto</label>
+      <input type="text" id="codigoProducto" name="codigoProducto">
+    </div>
+
+    <div class="grupo-form">
+      <label for="descripcionProducto">Descripción</label>
+      <input type="text" id="descripcionProducto" name="descripcionProducto" readonly value="-"><!-- simulando que se autocompleta -->
+    </div>
+
+    <div class="grupo-form">
+      <label for="cantidadActual">Cantidad Actual</label>
+      <input type="number" id="cantidadActual" name="cantidadActual" readonly value="0">
+    </div>
+
+    <div class="grupo-form">
+      <label for="cantidadAgregar">Cantidad</label>
+      <input type="number" id="cantidadAgregar" name="cantidadAgregar" step="0.01">
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" class="btn-confirmar">Agregar cantidad a Inventario</button>
+    </div>
+  </form>
+</section>

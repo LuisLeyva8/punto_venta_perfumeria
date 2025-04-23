@@ -3,24 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inicio de Sesión</title>
+  <title>Punto de Venta - Moderno</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar-extendido');
+      const content = document.querySelector('.content');
+      sidebar.classList.toggle('expanded');
+      content.classList.toggle('expanded');
+    }
+  </script>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Iniciar Sesión</h2>
-    <form id="loginForm">
-      <label for="username">Usuario 3</label>
-      <input type="text" id="username" name="username" required />
+  <script>
+    const usuarioActivo = localStorage.getItem('usuarioActivo');
+    if (!usuarioActivo) {
+      window.location.href = 'login.html';
+    }
+  </script>
 
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" required />
+  <div class="layout">
+    <!-- Menú lateral -->
+    <aside class="sidebar-extendido">
+      <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+      <div class="logo">💠 <strong>Perfumería</strong></div>
+      <nav class="menu-lateral">
+        <button class="item active" data-pantalla="inicio"><i>🏠</i> <span>Inicio</span></button>
+        <button class="item" data-pantalla="clientes"><i>👥</i> <span>Clientes</span></button>
+        <button class="item" data-pantalla="ventas"><i>🧾</i> <span>Ventas</span></button>
+        <button class="item" data-pantalla="Productos">📦<i></i> <span>Produtos</span></button>
+        <button class="item" data-pantalla="inventario">📊<i></i> <span>Inventario</span></button>
+<button class="item" data-pantalla="perfil"><i>👤</i> <span>Perfil</span></button>
 
-      <button type="submit">Entrar</button>
-    </form>
-    <p id="message"></p>
+        <button class="item" data-pantalla="configuracion"><i>⚙️</i> <span>Configuración</span></button>
+        <button class="item" data-pantalla="corte"><i>💰</i> <span>Corte</span></button>
+      </nav>
+      
+      <button class="btn-principal">+ Nueva Venta</button>
+    </aside>
+
+    <!-- Panel de contenido -->
+    <main class="content" id="pantalla-container">
+
+      <h2>Bienvenido al Punto de Venta</h2>
+      <p>Haz clic en el menú lateral para explorar las secciones.</p>
+    </main>
   </div>
 
+  <!-- Menú inferior (para colocar en el index) -->
+  <nav class="footer-nav">
+    <button data-pantalla="ventas">🧾<span>Inicio</span></button>
+    <button data-pantalla="inventario">📊<span>Inventario</span></button>
+    <button data-pantalla="productos">📦<span>Productos</span></button>
+    <button data-pantalla="perfil">👤<span>Perfil</span></button>
+
+    <button class="menu-btn" data-pantalla="inicio">🏠</button>
+   
+    <button data-pantalla="clientes">👥<span>Clientes</span></button>
+    <button data-pantalla="corte">💰<span>Corte</span></button>
+
+    <button data-pantalla="configuracion">⚙️<span>Config</span></button>
+
+  </nav>
+  
   <script src="script.js"></script>
+
+  
 </body>
 </html>
+
+
