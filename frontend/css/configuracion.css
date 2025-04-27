@@ -1,0 +1,55 @@
+.configuracion-panel {
+    background: white;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .configuracion-panel h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .btn-toggle {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .grupo-config {
+    margin-bottom: 2rem;
+  }
+  
+  .grupo-config h3 {
+    font-size: 1.2rem;
+    color: #374151;
+    margin-bottom: 0.7rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.3rem;
+  }
+  
+  .opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+  
+  .opciones button {
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .opciones button:hover {
+    background-color: #e5e7eb;
+  }

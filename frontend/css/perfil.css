@@ -1,0 +1,70 @@
+.perfil-panel {
+    background: white;
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  
+  .perfil-contenido {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  
+  .foto-perfil {
+    text-align: center;
+  }
+  
+  .foto-perfil img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .info-perfil p {
+    margin: 0.3rem 0;
+  }
+  
+  .form-cambio-clave {
+    margin-top: 1rem;
+  }
+  
+  .form-cambio-clave input {
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+  
+  .form-cambio-clave button {
+    margin-top: 0.5rem;
+    background-color: var(--color-accent);
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .acciones-perfil {
+    margin-top: 1.5rem;
+  }
+  
+  .acciones-perfil .cerrar {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: bold;
+    cursor: pointer;
+  }
+  

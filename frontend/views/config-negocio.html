@@ -1,0 +1,49 @@
+
+<link rel="stylesheet" href="/frontend/css/config-negocio.css" />
+
+<!-- views/config-negocio.html -->
+<div class="pantalla">
+    <h2>Configuración del Negocio</h2>
+  
+    <form id="form-config-negocio" class="form-negocio">
+      <div class="campo">
+        <label for="nombreNegocio">Nombre del Negocio</label>
+        <input type="text" id="nombreNegocio" placeholder="Ej: Perfumería Aroma" required>
+      </div>
+  
+      <div class="campo">
+        <label for="logoNegocio">Logo del Negocio</label>
+        <input type="file" id="logoNegocio" accept="image/*">
+        <div id="previewLogo" class="preview-logo"></div>
+      </div>
+  
+      <div class="campo">
+        <label for="colorPrimario">Color Primario</label>
+        <input type="color" id="colorPrimario" value="#3b82f6">
+      </div>
+  
+      <div class="campo">
+        <label for="colorFondo">Color de Fondo</label>
+        <input type="color" id="colorFondo" value="#f9fafb">
+      </div>
+  
+      <div class="campo">
+        <label for="colorTexto">Color de Texto</label>
+        <input type="color" id="colorTexto" value="#111827">
+      </div>
+  
+      <button type="submit" class="btn-guardar">Guardar Cambios</button>
+    </form>
+  </div>
+  
+  <style>
+    
+    
+/* Configuración - Estilos específicos */
+/* Configuración del Negocio - CSS */
+
+
+
+  </style>
+
+<script src="/frontend/js/config-negocio.js"></script>

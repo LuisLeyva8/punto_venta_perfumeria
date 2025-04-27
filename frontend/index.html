@@ -26,14 +26,19 @@
     <!-- Menú lateral -->
     <aside class="sidebar-extendido">
       <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
-      <div class="logo">💠 <strong>Perfumería</strong></div>
+      <div class="logo">
+        <img id="logoNegocioSidebar" src="" alt="Logo" style="width: 40px; height: 40px; object-fit: contain; border-radius: 5%; background:white;"> 
+        <strong id="nombreNegocioSidebar">Perfumería</strong>
+      </div>
+      
       <nav class="menu-lateral">
         <button class="item active" data-pantalla="inicio"><i>🏠</i> <span>Inicio</span></button>
         <button class="item" data-pantalla="clientes"><i>👥</i> <span>Clientes</span></button>
         <button class="item" data-pantalla="ventas"><i>🧾</i> <span>Ventas</span></button>
         <button class="item" data-pantalla="Productos">📦<i></i> <span>Produtos</span></button>
         <button class="item" data-pantalla="inventario">📊<i></i> <span>Inventario</span></button>
-<button class="item" data-pantalla="perfil"><i>👤</i> <span>Perfil</span></button>
+        <button class="item" data-pantalla="perfil"><i>👤</i> <span>Perfil</span></button>
+        <button class="item" data-pantalla="config-negocio"><i>🏢</i> <span>Negocio</span></button>
 
         <button class="item" data-pantalla="configuracion"><i>⚙️</i> <span>Configuración</span></button>
         <button class="item" data-pantalla="corte"><i>💰</i> <span>Corte</span></button>
@@ -56,7 +61,7 @@
     <button data-pantalla="inventario">📊<span>Inventario</span></button>
     <button data-pantalla="productos">📦<span>Productos</span></button>
     <button data-pantalla="perfil">👤<span>Perfil</span></button>
-
+    
     <button class="menu-btn" data-pantalla="inicio">🏠</button>
    
     <button data-pantalla="clientes">👥<span>Clientes</span></button>
@@ -68,6 +73,8 @@
   
   <script src="script.js"></script>
 
+
+  
   
 </body>
 </html>

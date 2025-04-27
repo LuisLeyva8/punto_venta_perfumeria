@@ -1,8 +1,8 @@
 .clientes-panel {
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -18,21 +18,21 @@
     padding: 0.6rem 1rem;
     font-weight: bold;
     border: none;
-    background-color: #e2e8f0;
+    background-color: var(--color-border);
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s;
   }
   
   .barra-acciones .activo {
-    background-color: #10b981;
+    background-color: var(--color-accent);
     color: white;
   }
   
   .barra-acciones .secundario {
     margin-left: auto;
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: var(--color-bg);
+    color: var(--color-text);
   }
   
   .estado-cuenta label {
@@ -44,7 +44,7 @@
   .estado-cuenta input {
     width: 100%;
     padding: 0.6rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     margin-bottom: 1rem;
   }
@@ -58,12 +58,12 @@
   .tabla-clientes th,
   .tabla-clientes td {
     padding: 0.5rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border);
     text-align: left;
   }
   
   .tabla-clientes thead {
-    background-color: #f9fafb;
+    background-color: var(--color-bg);
   }
   
   .acciones-clientes {
@@ -73,15 +73,16 @@
   }
   
   .btn-confirmar {
-    background-color: #10b981;
+    background-color: var(--color-accent);
     color: white;
     padding: 0.7rem 2rem;
     font-weight: bold;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius);
     cursor: pointer;
   }
   
   .btn-confirmar:hover {
     background-color: #059669;
   }
+  
