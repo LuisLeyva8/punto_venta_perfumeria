@@ -158,3 +158,15 @@
     cursor: pointer;
   }
   
+  .btn-cantidad {
+    padding: 2px 6px;
+    margin: 0 3px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .cantidad {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+  }
