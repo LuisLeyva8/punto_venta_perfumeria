@@ -1,0 +1,122 @@
+<section class="panel-corte">
+  <h2>Corte de Caja</h2>
+  <div class="acciones-corte">
+    <button class="btn-principal">Hacer corte de hoy</button>
+    <button class="btn-secundario">Imprimir Corte</button>
+  </div>
+
+  <div class="grid-corte">
+    <div class="bloque">
+      <h3>Entradas de Efectivo</h3>
+      <p>Entrada de Dinero (Cambio): <strong>$0.00</strong></p>
+      <p>Dinero Inicial en Caja: <strong>$0.00</strong></p>
+      <p class="total">Total: <strong>$0.00</strong></p>
+    </div>
+
+    <div class="bloque">
+      <h3>Dinero en Caja</h3>
+      <p>Ventas en efectivo: <strong>+ $0.00</strong></p>
+      <p>Entradas: <strong>+ $0.00</strong></p>
+      <p>Pago a Proveedores: <strong>- $0.00</strong></p>
+      <p class="total">Total: <strong>$0.00</strong></p>
+    </div>
+
+    <div class="bloque">
+      <h3>Pagos de contado</h3>
+      <p>Efectivo: <strong>$0.00</strong></p>
+      <p>Tarjeta de crédito/débito: <strong>$0.00</strong></p>
+      <p class="total">Total: <strong>$0.00</strong></p>
+    </div>
+
+    <div class="bloque">
+      <h3>Ventas por Departamento</h3>
+      <p>(Gráfica o tabla aquí)</p>
+    </div>
+  </div>
+
+  <div class="resumen-final">
+    <p>Pagos de Clientes: <strong>$0.00</strong></p>
+    <p>Pagos a Proveedores: <strong>$0.00</strong></p>
+
+    <div class="totales-finales">
+      <p>Ventas Totales: <strong class="monto">$0.00</strong></p>
+      <p>Ganancia del día: <strong class="monto">$0.00</strong></p>
+      <small>(Precio de Venta - Precio de Costo - Impuestos) x Cantidad Vendida</small>
+    </div>
+  </div>
+</section>
+
+<style>
+.panel-corte {
+  background: white;
+  padding: 2rem;
+  max-width: 1100px;
+  margin: auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+.panel-corte h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.acciones-corte {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.btn-principal {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.btn-secundario {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.grid-corte {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.bloque {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+.bloque h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.7rem;
+}
+.total {
+  font-weight: bold;
+  color: #111827;
+  margin-top: 0.5rem;
+}
+.resumen-final {
+  margin-top: 2rem;
+}
+.resumen-final p {
+  margin: 0.4rem 0;
+}
+.totales-finales {
+  margin-top: 1rem;
+  background: #f3f4f6;
+  padding: 1rem;
+  border-radius: 6px;
+}
+.totales-finales .monto {
+  font-size: 1.3rem;
+  color: #10b981;
+  font-weight: bold;
+}
+</style>
