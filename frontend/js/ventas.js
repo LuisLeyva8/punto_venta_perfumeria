@@ -1,98 +1,387 @@
+const inputCodigo = document.getElementById('codigo');
+const botonAgregar = document.getElementById('agregarProducto');
+const tablaListaVenta = document.getElementById('lista-venta');
 
-  const inputCodigo = document.getElementById('codigo');
-  const botonAgregar = document.getElementById('agregarProducto');
-  const tablaListaVenta = document.getElementById('lista-venta');
+// Buscar producto
+async function buscarProducto(codigo) {
+  try {
+    const respuesta = await fetch(`http://127.0.0.1:3000/buscar-producto/${codigo}`);
+    const producto = await respuesta.json();
+    return producto;
+  } catch (error) {
+    console.error("Error al buscar el producto:", error);
+    return null;
+  }
+}
 
-  async function buscarProducto(codigo) {
-    try {
-      const respuesta = await fetch(`http://127.0.0.1:3000/buscar-producto/${codigo}`);
-      const producto = await respuesta.json();
-      return producto;
-    } catch (error) {
-      console.error("Error al buscar el producto:", error);
-      return null;
+// Agregar producto normal (ENTER o botón verde)
+async function agregarProductoATabla() {
+  const codigo = inputCodigo.value.trim();
+  if (codigo === '') return;
+
+  const producto = await buscarProducto(codigo);
+  if (!producto) return;
+
+  agregarOActualizarProducto(producto, 1);
+
+  inputCodigo.value = '';
+  inputCodigo.focus();
+}
+
+// Abrir el modal INS
+function abrirModalINS() {
+  document.getElementById('modalINS').style.display = 'block';
+}
+
+// Cerrar el modal INS
+function cerrarModalINS() {
+  document.getElementById('modalINS').style.display = 'none';
+  document.getElementById('codigoINS').value = '';
+  document.getElementById('cantidadINS').value = 1;
+}
+
+// Confirmar carga por INS
+async function confirmarINS() {
+  const codigo = document.getElementById('codigoINS').value.trim();
+  const cantidad = parseInt(document.getElementById('cantidadINS').value.trim(), 10);
+
+  if (codigo === '' || isNaN(cantidad) || cantidad <= 0) {
+    alert('Por favor ingresa un código válido y una cantidad mayor a 0.');
+    return;
+  }
+
+  const producto = await buscarProducto(codigo);
+  if (!producto) return;
+
+  agregarOActualizarProducto(producto, cantidad);
+
+  cerrarModalINS();
+}
+
+// Agrega o actualiza cantidad en tabla
+function agregarOActualizarProducto(producto, cantidadAgregar) {
+  const filas = tablaListaVenta.getElementsByTagName('tr');
+  let encontrado = false;
+
+  for (let fila of filas) {
+    const codigoEnFila = fila.cells[0].textContent;
+    if (codigoEnFila === producto.codigo_barras) {
+      // Ya existe ➔ actualizar cantidad
+      const spanCantidad = fila.querySelector('.cantidad');
+      let cantidadActual = parseInt(spanCantidad.textContent);
+      cantidadActual += cantidadAgregar;
+      spanCantidad.textContent = cantidadActual;
+
+      // Actualizar Importe
+      const precio = parseFloat(producto.precio_venta);
+      fila.cells[4].textContent = `$${(precio * cantidadActual).toFixed(2)}`;
+
+      // Validar existencia
+      validarExistencia(fila, cantidadActual, producto.cantidad);
+
+      encontrado = true;
+      break;
     }
   }
-  
-  async function agregarProductoATabla() {
-    const inputCodigo = document.getElementById('codigo');
-    const codigo = inputCodigo.value.trim();
-    if (codigo === '') return;
-  
-    const producto = await buscarProducto(codigo);
-    if (!producto) return;
-  
-    const tabla = document.getElementById('lista-venta'); // <-- ahora directo al tbody
-  
-    // Buscar si ya existe una fila con el mismo código
-    const filas = tabla.getElementsByTagName('tr');
-    let encontrado = false;
-  
-    for (let fila of filas) {
-      const codigoEnFila = fila.cells[0].textContent;
-      if (codigoEnFila === producto.codigo_barras) {
-        // Producto ya existe, aumentar cantidad
-        let cantidadActual = parseInt(fila.cells[3].textContent);
-        cantidadActual += 1;
-        fila.cells[3].textContent = cantidadActual;
-  
-        // Actualizar importe
-        const precio = parseFloat(producto.precio_venta);
-        fila.cells[4].textContent = `$${(precio * cantidadActual).toFixed(2)}`;
-  
-        encontrado = true;
-        break;
-      }
-    }
-  
-    if (!encontrado) {
-      // Producto no existe, agregar nueva fila
-      const nuevaFila = document.createElement('tr');
-      nuevaFila.innerHTML = `
-  <td>${producto.codigo_barras}</td>
-  <td>${producto.descripcion}</td>
-  <td>$${producto.precio_venta.toFixed(2)}</td>
-  <td>
-    <button class="btn-cantidad" onclick="cambiarCantidad(this, -1)">-</button>
-    <span class="cantidad">1</span>
-    <button class="btn-cantidad" onclick="cambiarCantidad(this, 1)">+</button>
-  </td>
-  <td>$${producto.precio_venta.toFixed(2)}</td>
-  <td>${producto.cantidad}</td>
-`;
-      tabla.appendChild(nuevaFila);
-    }
-  
-    inputCodigo.value = '';
-    inputCodigo.focus();
+
+  if (!encontrado) {
+    // Producto nuevo ➔ crear fila
+    const nuevaFila = document.createElement('tr');
+    nuevaFila.innerHTML = `
+      <td>${producto.codigo_barras}</td>
+      <td>${producto.descripcion}</td>
+      <td>$${producto.precio_venta.toFixed(2)}</td>
+      <td>
+        <button class="btn-cantidad" onclick="cambiarCantidad(this, -1)">-</button>
+        <span class="cantidad">${cantidadAgregar}</span>
+        <button class="btn-cantidad" onclick="cambiarCantidad(this, 1)">+</button>
+      </td>
+      <td>$${(producto.precio_venta * cantidadAgregar).toFixed(2)}</td>
+      <td>${producto.cantidad}</td>
+    `;
+    tablaListaVenta.appendChild(nuevaFila);
+
+    // Validar existencia al crear
+    validarExistencia(nuevaFila, cantidadAgregar, producto.cantidad);
   }
-  
-  function cambiarCantidad(boton, cambio) {
-    const fila = boton.closest('tr');
+}
+
+// Cambiar cantidad manualmente con botones + y -
+function cambiarCantidad(boton, cambio) {
+  const fila = boton.closest('tr');
+  const spanCantidad = fila.querySelector('.cantidad');
+  let cantidadActual = parseInt(spanCantidad.textContent);
+
+  cantidadActual += cambio;
+  if (cantidadActual < 1) cantidadActual = 1;
+
+  spanCantidad.textContent = cantidadActual;
+
+  const precioTexto = fila.cells[2].textContent.replace('$', '');
+  const precio = parseFloat(precioTexto);
+
+  fila.cells[4].textContent = `$${(precio * cantidadActual).toFixed(2)}`;
+
+  const existencia = parseFloat(fila.cells[5].textContent);
+  validarExistencia(fila, cantidadActual, existencia);
+}
+
+// Validar existencia y marcar en rojo si se pasa
+function validarExistencia(fila, cantidad, existencia) {
+  const celdaExistencia = fila.cells[5];
+  if (cantidad > existencia) {
+    celdaExistencia.style.backgroundColor = 'red';
+    celdaExistencia.style.color = 'white';
+  } else {
+    celdaExistencia.style.backgroundColor = '';
+    celdaExistencia.style.color = '';
+  }
+}
+
+// Listeners
+botonAgregar.addEventListener('click', agregarProductoATabla, true);
+
+inputCodigo.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    agregarProductoATabla();
+  }
+});
+
+
+
+
+
+
+
+// Abrir el modal Producto Común
+function abrirModalComun() {
+  document.getElementById('modalComun').style.display = 'block';
+}
+
+// Cerrar el modal Producto Común
+function cerrarModalComun() {
+  document.getElementById('modalComun').style.display = 'none';
+  document.getElementById('descripcionComun').value = '';
+  document.getElementById('cantidadComun').value = 1;
+  document.getElementById('precioComun').value = 0.00;
+}
+
+// Confirmar carga Producto Común
+function confirmarComun() {
+  const descripcion = document.getElementById('descripcionComun').value.trim();
+  const cantidad = parseInt(document.getElementById('cantidadComun').value.trim(), 10);
+  const precio = parseFloat(document.getElementById('precioComun').value.trim());
+
+  if (descripcion === '' || isNaN(cantidad) || cantidad <= 0 || isNaN(precio) || precio < 0) {
+    alert('Por favor llena todos los campos correctamente.');
+    return;
+  }
+
+  // Crear objeto producto artificial
+  const productoComun = {
+    codigo_barras: '0',
+    descripcion: descripcion,
+    precio_venta: precio,
+    cantidad: 'ilim' // Existencia infinita
+  };
+
+  agregarOActualizarProducto(productoComun, cantidad);
+
+  cerrarModalComun();
+}
+
+
+
+
+
+
+
+
+let productoSeleccionado = null;
+let filaSeleccionada = null; // NUEVA VARIABLE
+
+function abrirModalBuscar() {
+  document.getElementById('modalBuscar').style.display = 'block';
+  document.getElementById('inputBuscarDescripcion').value = '';
+  document.getElementById('tablaResultadosBuscar').querySelector('tbody').innerHTML = '';
+  productoSeleccionado = null;
+}
+
+function cerrarModalBuscar() {
+  document.getElementById('modalBuscar').style.display = 'none';
+}
+// Buscar productos mientras escribe
+async function buscarProductosPorDescripcion() {
+  const texto = document.getElementById('inputBuscarDescripcion').value.trim();
+  if (texto.length === 0) {
+    document.getElementById('tablaResultadosBuscar').querySelector('tbody').innerHTML = '';
+    productoSeleccionado = null;
+    filaSeleccionada = null;
+    return;
+  }
+
+  try {
+    const respuesta = await fetch(`http://127.0.0.1:3000/buscar-descripcion/${texto}`);
+    const productos = await respuesta.json();
+    
+    const tbody = document.getElementById('tablaResultadosBuscar').querySelector('tbody');
+    tbody.innerHTML = '';
+
+    productos.forEach(producto => {
+      const fila = document.createElement('tr');
+      fila.innerHTML = `
+        <td>${producto.descripcion}</td>
+        <td>$${producto.precio_venta.toFixed(2)}</td>
+        <td>${producto.departamento || '-'}</td>
+      `;
+
+      fila.onclick = () => seleccionarProductoBusqueda(fila, producto);
+
+      tbody.appendChild(fila);
+    });
+
+    productoSeleccionado = null;
+    filaSeleccionada = null;
+  } catch (error) {
+    console.error('Error al buscar descripción:', error);
+  }
+}
+
+// Nueva función para seleccionar un producto
+function seleccionarProductoBusqueda(fila, producto) {
+  if (filaSeleccionada) {
+    filaSeleccionada.style.backgroundColor = '';
+  }
+
+  fila.style.backgroundColor = '#b3d7ff'; // Resalta la fila
+  filaSeleccionada = fila;
+  productoSeleccionado = producto;
+}
+
+// Aceptar producto seleccionado
+function aceptarProductoBusqueda() {
+  if (!productoSeleccionado) {
+    alert('Selecciona un producto primero.');
+    return;
+  }
+
+  agregarOActualizarProducto(productoSeleccionado, 1);
+  cerrarModalBuscar();
+}
+
+// Permitir seleccionar filas en la tabla de ventas
+tablaListaVenta.addEventListener('click', function(event) {
+  const fila = event.target.closest('tr');
+  if (fila) {
+    fila.classList.toggle('seleccionado');
+  }
+});
+
+let modoMayoreo = false; // 🌟 Estado global: false = precio normal, true = mayoreo
+
+async function aplicarMayoreo() {
+  const filas = tablaListaVenta.getElementsByTagName('tr');
+  const filasSeleccionadas = Array.from(filas).filter(fila => fila.classList.contains('seleccionado'));
+  const filasATrabajar = filasSeleccionadas.length > 0 ? filasSeleccionadas : filas;
+
+  for (let fila of filasATrabajar) {
+    const codigo = fila.cells[0].textContent.trim();
+    if (codigo === '0') continue; // No aplicar mayoreo a productos comunes
+
+    const precioCell = fila.cells[2];
+    const importeCell = fila.cells[4];
     const spanCantidad = fila.querySelector('.cantidad');
-    let cantidadActual = parseInt(spanCantidad.textContent);
-  
-    cantidadActual += cambio;
-  
-    if (cantidadActual < 1) {
-      cantidadActual = 1; // No permitir cantidades menores a 1
+    const cantidad = parseInt(spanCantidad.textContent);
+
+    if (!fila.dataset.precioOriginal) {
+      // Guardar precio original solo una vez
+      const precioActualTexto = precioCell.textContent.replace('$', '');
+      fila.dataset.precioOriginal = parseFloat(precioActualTexto);
     }
-  
-    spanCantidad.textContent = cantidadActual;
-  
-    // Actualizar el importe
-    const precioTexto = fila.cells[2].textContent.replace('$', '');
-    const precio = parseFloat(precioTexto);
-    fila.cells[4].textContent = `$${(precio * cantidadActual).toFixed(2)}`;
-  }
-  
-  
 
-  botonAgregar.addEventListener('click', agregarProductoATabla, true);
+    if (modoMayoreo) {
+      // 🔵 Modo normal (quitar descuento)
+      const precioOriginal = parseFloat(fila.dataset.precioOriginal);
+      precioCell.innerHTML = `$${precioOriginal.toFixed(2)}`;
+      importeCell.textContent = `$${(precioOriginal * cantidad).toFixed(2)}`;
+      fila.classList.remove('descuento-mayoreo');
 
-  inputCodigo.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter') {
-          event.preventDefault();
-          agregarProductoATabla();
+    } else {
+      // 🟢 Modo mayoreo (aplicar descuento)
+      try {
+        const respuesta = await fetch(`http://127.0.0.1:3000/buscar-mayoreo/${codigo}`);
+        const producto = await respuesta.json();
+
+        if (producto.error || producto.precio_mayoreo === null) {
+          console.warn(`Producto ${codigo} no tiene precio mayoreo.`);
+          continue;
+        }
+
+        const precioMayoreo = parseFloat(producto.precio_mayoreo);
+
+        precioCell.innerHTML = `
+          <div>$${precioMayoreo.toFixed(2)}</div>
+          <small style="color: gray; text-decoration: line-through;">$${parseFloat(fila.dataset.precioOriginal).toFixed(2)}</small>
+        `;
+        importeCell.textContent = `$${(precioMayoreo * cantidad).toFixed(2)}`;
+        fila.classList.add('descuento-mayoreo');
+
+      } catch (error) {
+        console.error(`Error buscando precio mayoreo para ${codigo}:`, error);
       }
+    }
+  }
+
+  modoMayoreo = !modoMayoreo; // 🌟 Cambiar estado después de aplicar
+}
+
+// Al hacer click fuera de la tabla, limpiar selección
+document.addEventListener('click', function(event) {
+  const tabla = document.getElementById('lista-venta');
+  const esClickDentroDeTabla = tabla.contains(event.target);
+
+  if (!esClickDentroDeTabla) {
+    limpiarSeleccionTabla();
+  }
+});
+
+// Función para limpiar todas las filas seleccionadas
+function limpiarSeleccionTabla() {
+  const filas = tablaListaVenta.getElementsByTagName('tr');
+  for (let fila of filas) {
+    fila.classList.remove('seleccionado');
+  }
+}
+
+
+function eliminarArticuloSeleccionado() {
+  const tbody = document.getElementById('lista-venta');
+  const filas = Array.from(tbody.querySelectorAll('tr.seleccionado'));
+  let algunaFilaEliminada = false;
+
+  filas.forEach(fila => {
+    fila.remove();
+    algunaFilaEliminada = true;
   });
+
+  if (!algunaFilaEliminada) {
+    alert('Selecciona un producto primero para eliminar.');
+  }
+
+  actualizarEstadoTabla();
+}
+
+// Función para mostrar/ocultar mensaje cuando tabla esté vacía
+function actualizarEstadoTabla() {
+  const tbody = document.getElementById('lista-venta');
+  const mensajeVacio = document.getElementById('mensajeVacio');
+  const hayFilas = tbody.querySelector('tr') !== null;
+
+  if (hayFilas) {
+    mensajeVacio.style.display = 'none';
+  } else {
+    mensajeVacio.style.display = 'block';
+  }
+}
+

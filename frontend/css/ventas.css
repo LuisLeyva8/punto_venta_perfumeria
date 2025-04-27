@@ -170,3 +170,56 @@
     width: 20px;
     text-align: center;
   }
+/* Modal INS */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
+  padding-top: 100px; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  margin: 5px;
+}
+
+#tablaResultadosBuscar th, #tablaResultadosBuscar td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+#tablaResultadosBuscar tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#tablaResultadosBuscar tr.seleccionado {
+  background-color: #b3d7ff;
+}
+
+#lista-venta tr.seleccionado {
+  background-color: #c6f6d5; /* Verde clarito */
+}
+
+#lista-venta tr.descuento-mayoreo {
+  background-color: #d4f1f9; /* Azul clarito para descuentos */
+}
