@@ -1,5 +1,3 @@
-const nombreNegocio = localStorage.getItem('nombreNegocio');
-const logoNegocio = localStorage.getItem('logoNegocio');
 
 cargarPantalla("inicio");
 // Función única para cargar pantalla y su JS
@@ -17,12 +15,14 @@ function cargarPantalla(nombre) {
       if (scriptAnterior) scriptAnterior.remove();
 
       // Solo cargar JS si existe para la pantalla
-      if (nombre === "ventas") {
-        const nuevoScript = document.createElement("script");
-        nuevoScript.src = `js/ventas.js`;
-        nuevoScript.id = "pantalla-script";
-        document.body.appendChild(nuevoScript);
-      }
+    
+
+      // SIEMPRE intentar cargar el js correspondiente a la pantalla
+      const nuevoScript = document.createElement("script");
+      nuevoScript.src = `js/${nombre}.js`;  // 🔥 Aquí usa dinámicamente el nombre
+      nuevoScript.id = "pantalla-script";
+      document.body.appendChild(nuevoScript);
+
 
       // Actualizar menú lateral activo
       document.querySelectorAll(".menu-lateral .item").forEach(btn => btn.classList.remove("active"));
@@ -69,3 +69,5 @@ if (logoNegocio) {
   const logoElemento = document.getElementById('logoNegocioSidebar');
   if (logoElemento) logoElemento.src = logoNegocio;
 }
+
+

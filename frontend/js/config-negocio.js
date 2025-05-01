@@ -1,77 +1,81 @@
-// frontend/js/config-negocio.js
-
-// Función para aplicar la configuración guardada
-document.addEventListener('DOMContentLoaded', () => {
-    aplicarConfiguracionNegocio();
-  });
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('form-config-negocio');
+    const nombreNegocioInput = document.getElementById('nombreNegocio');
+    const logoInput = document.getElementById('logoNegocio');
+    const previewLogo = document.getElementById('previewLogo');
+    const colorPrimarioInput = document.getElementById('colorPrimario');
+    const colorFondoInput = document.getElementById('colorFondo');
+    const colorTextoInput = document.getElementById('colorTexto');
   
-  function aplicarConfiguracionNegocio() {
-    const config = JSON.parse(localStorage.getItem('configNegocio'));
-    if (!config) return;
+    // Cargar valores guardados si existen
+    const nombreGuardado = localStorage.getItem('nombreNegocio');
+    const logoGuardado = localStorage.getItem('logoNegocio');
+    const colorPrimarioGuardado = localStorage.getItem('colorPrimario');
+    const colorFondoGuardado = localStorage.getItem('colorFondo');
+    const colorTextoGuardado = localStorage.getItem('colorTexto');
   
-    // Aplicar colores
-    document.documentElement.style.setProperty('--color-bg', config.colorFondo || '#f9fafb');
-    document.documentElement.style.setProperty('--color-text', config.colorTexto || '#111827');
-    document.documentElement.style.setProperty('--color-primary', config.colorPrimario || '#000000');
-    document.documentElement.style.setProperty('--color-accent', config.colorPrimario || '#10b981');
-  
-    // Aplicar nombre del negocio
-    const logoElement = document.querySelector('.logo');
-    if (logoElement) {
-      logoElement.innerHTML = '';
-      if (config.logoBase64) {
-        const img = document.createElement('img');
-        img.src = config.logoBase64;
-        img.alt = 'Logo';
-        img.style.height = '40px';
-        img.style.borderRadius = '8px';
-        logoElement.appendChild(img);
-      }
-      if (config.nombreNegocio) {
-        const spanNombre = document.createElement('strong');
-        spanNombre.style.marginLeft = '8px';
-        spanNombre.textContent = config.nombreNegocio;
-        logoElement.appendChild(spanNombre);
-      }
+    if (nombreGuardado) nombreNegocioInput.value = nombreGuardado;
+    if (colorPrimarioGuardado) colorPrimarioInput.value = colorPrimarioGuardado;
+    if (colorFondoGuardado) colorFondoInput.value = colorFondoGuardado;
+    if (colorTextoGuardado) colorTextoInput.value = colorTextoGuardado;
+    if (logoGuardado) {
+      previewLogo.innerHTML = `<img src="${logoGuardado}" alt="Logo" style="max-width:100px; border-radius:10px;">`;
     }
-  }
   
-  // Si estás en config-negocio.html y se guarda el formulario:
-  const formConfigNegocio = document.getElementById('form-config-negocio');
-  if (formConfigNegocio) {
-    formConfigNegocio.addEventListener('submit', (e) => {
-      e.preventDefault();
-  
-      const nombreNegocio = document.getElementById('nombreNegocio').value.trim();
-      const colorPrimario = document.getElementById('colorPrimario').value;
-      const colorFondo = document.getElementById('colorFondo').value;
-      const colorTexto = document.getElementById('colorTexto').value;
-  
-      const logoInput = document.getElementById('logoNegocio');
-  
-      const config = {
-        nombreNegocio,
-        colorPrimario,
-        colorFondo,
-        colorTexto,
-      };
-  
-      // Leer logo si se subió
-      if (logoInput.files.length > 0) {
+    // Evento al cambiar logo para previsualizarlo
+    logoInput.addEventListener('change', function () {
+      const file = logoInput.files[0];
+      if (file) {
         const reader = new FileReader();
-        reader.onload = function (event) {
-          config.logoBase64 = event.target.result;
-          localStorage.setItem('configNegocio', JSON.stringify(config));
-          alert('Configuración guardada correctamente!');
-          location.reload();
+        reader.onload = function (e) {
+          previewLogo.innerHTML = `<img src="${e.target.result}" alt="Logo" style="max-width:100px; border-radius:10px;">`;
         };
-        reader.readAsDataURL(logoInput.files[0]);
-      } else {
-        // Si no hay nuevo logo
-        localStorage.setItem('configNegocio', JSON.stringify(config));
-        alert('Configuración guardada correctamente!');
-        location.reload();
+        reader.readAsDataURL(file);
       }
     });
-  }
+  
+    // Evento guardar cambios
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+  
+      const nombreNegocio = nombreNegocioInput.value;
+      const colorPrimario = colorPrimarioInput.value;
+      const colorFondo = colorFondoInput.value;
+      const colorTexto = colorTextoInput.value;
+  
+      localStorage.setItem('nombreNegocio', nombreNegocio);
+      localStorage.setItem('colorPrimario', colorPrimario);
+      localStorage.setItem('colorFondo', colorFondo);
+      localStorage.setItem('colorTexto', colorTexto);
+  
+      // Logo
+      const file = logoInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          localStorage.setItem('logoNegocio', e.target.result);
+          actualizarVista();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        actualizarVista();
+      }
+    });
+  
+    function actualizarVista() {
+      // Cambiar valores CSS dinámicamente
+      document.documentElement.style.setProperty('--color-primary', localStorage.getItem('colorPrimario'));
+      document.documentElement.style.setProperty('--color-bg', localStorage.getItem('colorFondo'));
+      document.documentElement.style.setProperty('--color-text', localStorage.getItem('colorTexto'));
+  
+      // Cambiar nombre y logo en el sidebar si existen
+      const nombreElement = document.getElementById('nombreNegocioSidebar');
+      const logoElement = document.getElementById('logoNegocioSidebar');
+  
+      if (nombreElement) nombreElement.textContent = localStorage.getItem('nombreNegocio') || 'Negocio';
+      if (logoElement) logoElement.src = localStorage.getItem('logoNegocio') || '';
+  
+      alert('✅ ¡Cambios guardados correctamente!');
+    }
+});
   

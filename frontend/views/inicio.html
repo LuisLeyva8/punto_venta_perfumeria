@@ -1,81 +1,66 @@
-<section class="panel-inicio">
-    <div class="bienvenida">
-      <img src="/static/logo.png" alt="Logo del Punto de Venta" class="logo-inicio">
-      <h1>Punto de Venta - Perfumería</h1>
-      <p>Bienvenido al sistema. Selecciona una opción para comenzar.</p>
+<link rel="stylesheet" href="/frontend/css/inicio.css" />
+
+
+<div class="inicio-panel">
+    <div class="logo-inicio">
+      <img id="logoNegocioInicio" src="" alt="Logo del Negocio">
     </div>
+    <h1 class="nombre-negocio">Punto de Venta</h1>
+    <p class="subtitulo-negocio" id="nombreNegocioInicio">Perfumería Aroma</p>
   
-    <div class="botones-inicio">
-        <button onclick="cargarPantalla('ventas')">🧾 Ventas</button>
-        <button onclick="cargarPantalla('clientes')">👥 Clientes</button>
-        <button onclick="cargarPantalla('productos')">📦 Productos</button>
-        <button onclick="cargarPantalla('inventario')">📊 Inventario</button>
-        <button onclick="cargarPantalla('configuracion')">⚙️ Configuración</button>
-        <button onclick="cargarPantalla('corte')">💰 Corte</button>
-        
+    <div class="grid-opciones">
+      <div class="tarjeta-opcion" onclick="cargarPantalla('ventas')">
+        <div class="icono">🧾</div>
+        <div class="texto">Ventas</div>
+      </div>
+      <div class="tarjeta-opcion" onclick="cargarPantalla('clientes')">
+        <div class="icono">👥</div>
+        <div class="texto">Clientes</div>
+      </div>
+      <div class="tarjeta-opcion" onclick="cargarPantalla('productos')">
+        <div class="icono">📦</div>
+        <div class="texto">Productos</div>
+      </div>
+      <div class="tarjeta-opcion" onclick="cargarPantalla('inventario')">
+        <div class="icono">📊</div>
+        <div class="texto">Inventario</div>
+      </div>
+      
+      <div class="tarjeta-opcion" onclick="cargarPantalla('corte')">
+        <div class="icono">💰</div>
+        <div class="texto">Corte</div>
+      </div>
+
+      <div class="tarjeta-opcion" onclick="cargarPantalla('perfil')">
+        <div class="icono">👤</div>
+        <div class="texto">Perfil</div>
+      </div>
+      <div class="tarjeta-opcion" onclick="cargarPantalla('config-negocio')">
+        <div class="icono">🏢</div>
+        <div class="texto">Negocio</div>
+      </div>
+
+      <div class="tarjeta-opcion" onclick="cargarPantalla('configuracion')">
+        <div class="icono">⚙️</div>
+        <div class="texto">Configuración</div>
+      </div>
+      
+     
+
+
     </div>
   
     <footer class="footer-inicio">
-      <p>&copy; 2024 Punto de Venta. Todos los derechos reservados.</p>
+      © 2024 Punto de Venta. Todos los derechos reservados.
     </footer>
-  </section>
-  <style>
-  .panel-inicio {
-    max-width: 800px;
-    margin: auto;
-    text-align: center;
-    padding: 2rem;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
+</div>
   
-  .logo-inicio {
-    width: 100px;
-    margin-bottom: 1rem;
-  }
-  
-  .bienvenida h1 {
-    font-size: 1.5rem;
-    color: #1f2937;
-  }
-  
-  .botones-inicio {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-  }
-  
-  .botones-inicio button {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 0.8rem 1.2rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s ease;
-    min-width: 150px;
-  }
-  
-  .botones-inicio button:hover {
-    background-color: #2563eb;
-  }
-  
-  .footer-inicio {
-    margin-top: 2rem;
-    font-size: 0.9rem;
-    color: #6b7280;
-  }
-  </style>
-  
-  <script src="/frontend/script.js"></script>
 
-  <script>
+
+  
+<script src="/frontend/script.js"></script>
+<script src="/frontend/js/inicio.js"></script>
+<script>
 
 function cargarPantalla(nombre) {
   fetch(`views/${nombre}.html`)

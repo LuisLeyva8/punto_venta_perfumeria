@@ -148,6 +148,7 @@ body {
   .content {
     margin-left: 0 !important;
     padding: 1rem;
+    padding-bottom: 80px;
   }
 
   .footer-nav {

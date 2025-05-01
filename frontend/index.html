@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Punto de Venta - Moderno</title>
   <link rel="stylesheet" href="style.css" />
+
+  <script>
+    // Proteger que solo entren usuarios logueados
+    const usuarioActivo = localStorage.getItem('usuarioActivo');
+  
+    if (!usuarioActivo) {
+      // Si no hay sesión, mandar a login
+      window.location.replace('login.html');
+    }
+  </script>
+  
   <script defer>
     function toggleSidebar() {
       const sidebar = document.querySelector('.sidebar-extendido');
@@ -13,14 +24,14 @@
       content.classList.toggle('expanded');
     }
   </script>
+ <!-- Agrega Chart.js desde CDN -->
+ <!-- Cargar Chart.js globalmente para todo el sistema -->
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </head>
 <body>
-  <script>
-    const usuarioActivo = localStorage.getItem('usuarioActivo');
-    if (!usuarioActivo) {
-      window.location.href = 'login.html';
-    }
-  </script>
+  
 
   <div class="layout">
     <!-- Menú lateral -->
@@ -39,6 +50,7 @@
         <button class="item" data-pantalla="inventario">📊<i></i> <span>Inventario</span></button>
         <button class="item" data-pantalla="perfil"><i>👤</i> <span>Perfil</span></button>
         <button class="item" data-pantalla="config-negocio"><i>🏢</i> <span>Negocio</span></button>
+        <button class="item" data-pantalla="reportes"><i>📈</i> <span>Reportes</span></button>
 
         <button class="item" data-pantalla="configuracion"><i>⚙️</i> <span>Configuración</span></button>
         <button class="item" data-pantalla="corte"><i>💰</i> <span>Corte</span></button>
@@ -57,22 +69,19 @@
 
   <!-- Menú inferior (para colocar en el index) -->
   <nav class="footer-nav">
-    <button data-pantalla="ventas">🧾<span>Inicio</span></button>
-    <button data-pantalla="inventario">📊<span>Inventario</span></button>
+    <button data-pantalla="ventas">🧾<span>Ventas</span></button>
+  
     <button data-pantalla="productos">📦<span>Productos</span></button>
-    <button data-pantalla="perfil">👤<span>Perfil</span></button>
+
     
     <button class="menu-btn" data-pantalla="inicio">🏠</button>
-   
-    <button data-pantalla="clientes">👥<span>Clientes</span></button>
     <button data-pantalla="corte">💰<span>Corte</span></button>
-
     <button data-pantalla="configuracion">⚙️<span>Config</span></button>
 
-  </nav>
+ </nav>
   
-  <script src="script.js"></script>
-
+ <script src="script.js"></script>
+ 
 </body>
 
 </html>

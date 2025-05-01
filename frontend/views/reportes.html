@@ -1,0 +1,39 @@
+
+    <link rel="stylesheet" href="/frontend/css/reportes.css" /><div class="pantalla">
+        <h2>📊 Dashboard de Reportes</h2>
+      
+        <!-- Filtros -->
+        <div class="filtros">
+          <label for="filtroPeriodo">Filtrar por:</label>
+          <select id="filtroPeriodo">
+            <option value="hoy">Hoy</option>
+            <option value="semana">Esta Semana</option>
+            <option value="mes">Este Mes</option>
+          </select>
+      
+          <button id="exportarExcel" class="btn-accion">📄 Exportar a Excel</button>
+        </div>
+      
+        <!-- Resumen rápido -->
+        <div class="resumen-grid">
+          <div class="tarjeta">
+            <h3>Ventas del Periodo</h3>
+            <p id="ventasPeriodo">$0.00</p>
+          </div>
+          <div class="tarjeta">
+            <h3>Productos Vendidos</h3>
+            <p id="productosVendidos">0</p>
+          </div>
+          <div class="tarjeta">
+            <h3>Ganancias</h3>
+            <p id="ganancias">$0.00</p>
+          </div>
+        </div>
+      
+        <!-- Gráficas -->
+        <div class="graficas">
+          <canvas id="graficaVentas"></canvas>
+          <canvas id="graficaProductos"></canvas>
+        </div>
+      </div>
+      
