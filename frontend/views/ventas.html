@@ -14,8 +14,8 @@
     <button onclick="abrirModalComun()">CTRL+P Art. Común</button>
     <button onclick="abrirModalBuscar()">F10 Buscar</button>
     <button onclick="aplicarMayoreo()">F11 Mayoreo</button>
-    <button>F7 Entradas</button>
-    <button>F8 Salidas</button>
+    <button onclick="abrirModalCaja('entrada')">F7 Entradas</button>
+    <button onclick="abrirModalCaja('salida')">F8 Salidas</button>
     <button class="eliminar" onclick="eliminarArticuloSeleccionado()">DEL Borrar Art.</button>
   </div>
 
@@ -61,6 +61,20 @@
     </div>
   </div>
 </section>
+
+<!-- Modal Entrada/Salida -->
+<div id="modalCaja" class="modal">
+  <div class="modal-content">
+    <h2 id="tituloModalCaja">Movimiento de Caja</h2>
+    <p id="dineroActualCaja">Dinero actual en caja: $0.00</p>
+    <input type="number" id="cantidadCaja" placeholder="Cantidad" min="0.01" step="0.01">
+    <div class="modal-buttons">
+      <button onclick="confirmarMovimientoCaja()">Confirmar</button>
+      <button onclick="cerrarModalCaja()">Cancelar</button>
+    </div>
+    <p id="mensajeCaja" style="color:red;"></p>
+  </div>
+</div>
 
 <!-- Modal INS Varios -->
 <div id="modalINS" class="modal">

@@ -385,3 +385,66 @@ function actualizarEstadoTabla() {
   }
 }
 
+let usuarioActual = "admin"; // Usuario actual por defecto
+let tipoMovimiento = ""; // "entrada" o "salida"
+let dineroActual = 0;
+
+async function abrirModalCaja(tipo) {
+  tipoMovimiento = tipo;
+  document.getElementById("tituloModalCaja").textContent = tipo === "entrada" ? "Entrada de Dinero" : "Salida de Dinero";
+  document.getElementById("cantidadCaja").value = "";
+  document.getElementById("mensajeCaja").textContent = "";
+
+  try {
+    const respuesta = await fetch(`http://127.0.0.1:3000/dinero-en-caja?usuario=${usuarioActual}`);
+    const data = await respuesta.json();
+    dineroActual = data.total_en_caja;
+
+    document.getElementById("dineroActualCaja").textContent = `Dinero actual en caja: $${dineroActual.toFixed(2)}`;
+    document.getElementById("modalCaja").style.display = "flex";
+  } catch (error) {
+    console.error("Error al obtener dinero en caja:", error);
+    document.getElementById("mensajeCaja").textContent = "Error al obtener dinero actual.";
+    document.getElementById("modalCaja").style.display = "flex";
+  }
+}
+
+function cerrarModalCaja() {
+  document.getElementById("modalCaja").style.display = "none";
+}
+
+async function confirmarMovimientoCaja() {
+  const cantidad = parseFloat(document.getElementById("cantidadCaja").value);
+
+  if (isNaN(cantidad) || cantidad <= 0) {
+    document.getElementById("mensajeCaja").textContent = "Ingrese una cantidad válida.";
+    return;
+  }
+
+  if (tipoMovimiento === "salida" && cantidad > dineroActual) {
+    document.getElementById("mensajeCaja").textContent = "No hay suficiente dinero en caja.";
+    return;
+  }
+
+  const ruta = tipoMovimiento === "entrada"
+    ? "http://127.0.0.1:3000/entrada"
+    : "http://127.0.0.1:3000/salida";
+
+  try {
+    const respuesta = await fetch(ruta, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cantidad: cantidad, usuario: usuarioActual })
+    });
+
+    const data = await respuesta.json();
+
+    document.getElementById("mensajeCaja").style.color = "green";
+    document.getElementById("mensajeCaja").textContent = data.mensaje;
+    setTimeout(cerrarModalCaja, 1500);
+  } catch (error) {
+    console.error("Error al confirmar movimiento:", error);
+    document.getElementById("mensajeCaja").style.color = "red";
+    document.getElementById("mensajeCaja").textContent = "Error al registrar el movimiento.";
+  }
+}

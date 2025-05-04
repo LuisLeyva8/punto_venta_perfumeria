@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import pymysql
 from flask_cors import CORS
 
@@ -119,10 +119,68 @@ def buscar_mayoreo(codigo):
         return jsonify({"error": "Error interno en servidor"}), 500
 
 
+@app.route('/entrada', methods=['POST'])
+def entrada_dinero():
+    try:
+        data = request.json
+        cantidad = float(data['cantidad'])
+        usuario = data.get('usuario', 'admin')
 
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
 
+        cursor.execute("""
+            UPDATE corte_caja 
+            SET entrada_dinero = entrada_dinero + %s,
+                total_en_caja = total_en_caja + %s
+            WHERE usuario = %s
+        """, (cantidad, cantidad, usuario))
+        
+        conn.commit()
+        conn.close()
 
+        return jsonify({'status': 'ok', 'mensaje': 'Entrada registrada'})
+    except Exception as e:
+        print("🚨 Error en /entrada:", str(e))
+        return jsonify({'error': 'Error interno en entrada'}), 500
 
+@app.route('/salida', methods=['POST'])
+def salida_dinero():
+    try:
+        data = request.json
+        cantidad = float(data['cantidad'])
+        usuario = data.get('usuario', 'admin')
+
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE corte_caja 
+            SET total_en_caja = total_en_caja - %s
+            WHERE usuario = %s
+        """, (cantidad, usuario))
+        
+        conn.commit()
+        conn.close()
+
+        return jsonify({'status': 'ok', 'mensaje': 'Salida registrada'})
+    except Exception as e:
+        print("🚨 Error en /salida:", str(e))
+        return jsonify({'error': 'Error interno en salida'}), 500
+
+@app.route('/dinero-en-caja')
+def dinero_en_caja():
+    try:
+        usuario = request.args.get("usuario", "admin")
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT total_en_caja FROM corte_caja WHERE usuario = %s", (usuario,))
+        result = cursor.fetchone()
+        conn.close()
+        return jsonify({'total_en_caja': float(result['total_en_caja']) if result else 0.0})
+    except Exception as e:
+        print("🚨 Error en /dinero-en-caja:", str(e))
+        return jsonify({'error': 'Error al consultar dinero en caja'}), 500
 
 
 

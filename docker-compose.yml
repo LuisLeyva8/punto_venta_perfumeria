@@ -14,16 +14,6 @@ services:
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
 
-  flaskapp:
-    build: .
-    container_name: flaskapp
-    ports:
-      - "5000:5000"
-    depends_on:
-      - mysql
-    networks:
-      - redlocal
-
 networks:
   redlocal:
 
