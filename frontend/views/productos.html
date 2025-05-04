@@ -77,10 +77,8 @@
       <div class="departamento-flex">
         <select id="departamento" name="departamento">
           <option value="">Sin Departamento</option>
-          <option value="perfumeria">Perfumería</option>
-          <option value="hogar">Hogar</option>
         </select>
-        <button type="button" class="secundario">Administrar Departamentos</button>
+        <button type="button" class="secundario" onclick="abrirModalDepartamentos()">Administrar Departamentos</button>
       </div>
     </div>
 
@@ -109,5 +107,35 @@
     </div>
   </form>
 </section>
+
+
+<div id="modalDepartamentos" class="modal" style="display:none;">
+  <div class="modal-contenido">
+    <h2>NUEVO DEPARTAMENTO</h2>
+    <input type="text" id="nuevoNombreDepartamento" placeholder="Nombre del departamento">
+<button onclick="crearDepartamento()">Guardar</button>
+  <button onclick="cerrarModalDepartamentos()">Cancelar</button>
+
+
+    <h3>Listado</h3>
+    <div id="listado-departamentos">
+      <table id="tabla-departamentos" style="width: 100%; margin-top: 10px;">
+        <thead>
+          <tr>
+            <th>Nombre del Departamento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoTablaDepartamentos">
+          <!-- Se llena con JS -->
+        </tbody>
+      </table>      
+  </div>
+
+  <div id="acciones-departamento" style="display: none; margin-top: 10px;">
+    <button onclick="editarDepartamento()">Editar</button>
+    <button onclick="eliminarDepartamento()">Eliminar</button>
+  </div>
+</div>
 
 <script src="/frontend/js/productos.js"></script>

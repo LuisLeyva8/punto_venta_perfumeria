@@ -141,3 +141,10 @@
 .opcion-kit:hover {
   background: #ddd;
 }
+
+#tabla-departamentos td {
+  padding: 6px;
+}
+#tabla-departamentos tr:hover {
+  cursor: pointer;
+}

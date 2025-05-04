@@ -257,6 +257,92 @@ def crear_kit():
         print("Error al crear kit:", e)
         return jsonify({'message': f'Error: {str(e)}'}), 500
 
+@app.route('/departamentos', methods=['GET'])
+def obtener_departamentos():
+    try:
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT id, nombre FROM departamentos ORDER BY nombre")
+        departamentos = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return jsonify(departamentos)
+    except Exception as e:
+        print("Error al obtener departamentos:", e)
+        return jsonify({'message': f'Error: {str(e)}'}), 500
+
+
+@app.route('/departamentos', methods=['POST'])
+def crear_departamento():
+    data = request.get_json()
+    try:
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO departamentos (nombre) VALUES (%s)", (data['nombre'],))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({'message': 'Departamento creado exitosamente'}), 201
+    except Exception as e:
+        print("Error al crear departamento:", e)
+        return jsonify({'message': f'Error: {str(e)}'}), 500
+
+
+@app.route('/departamentos/<int:id>', methods=['DELETE'])
+def eliminar_departamento(id):
+    try:
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM departamentos WHERE id = %s", (id,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({'message': 'Departamento eliminado'}), 200
+    except Exception as e:
+        print("Error al eliminar departamento:", e)
+        return jsonify({'message': f'Error: {str(e)}'}), 500
+
+@app.route('/departamentos/<int:id>', methods=['PUT'])
+def modificar_departamento(id):
+    try:
+        data = request.get_json()
+        nuevo_nombre = data.get("nombre", "").strip()
+
+        if not nuevo_nombre:
+            return jsonify({'message': 'Nombre inválido'}), 400
+
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("UPDATE departamentos SET nombre = %s WHERE id = %s", (nuevo_nombre, id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Departamento actualizado'}), 200
+    except Exception as e:
+        print("Error al actualizar departamento:", e)
+        return jsonify({'message': f'Error: {str(e)}'}), 500
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

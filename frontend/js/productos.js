@@ -134,3 +134,154 @@ document.getElementById('buscarKit').addEventListener('input', async (e) => {
     });
   });
 });
+
+
+
+async function cargarDepartamentosEnSelect() {
+  const res = await fetch("http://127.0.0.1:3000/departamentos");
+  const data = await res.json();
+  const select = document.getElementById("departamento");
+  select.innerHTML = '<option value="">Sin Departamento</option>';
+  data.forEach(dep => {
+    select.innerHTML += `<option value="${dep.id}">${dep.nombre}</option>`;
+  });
+}
+
+async function abrirModalDepartamentos() {
+  document.getElementById("modalDepartamentos").style.display = "flex";
+  document.getElementById("nuevoNombreDepartamento").value = "";
+  await listarDepartamentosModal();
+}
+
+async function listarDepartamentosModal() {
+  const res = await fetch("http://127.0.0.1:3000/departamentos");
+  const departamentos = await res.json();
+  const cuerpoTabla = document.getElementById("cuerpoTablaDepartamentos");
+  cuerpoTabla.innerHTML = "";
+
+  departamentos.forEach(dep => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${dep.nombre}</td>
+      <td>
+        <span class="acciones" style="display: none;">
+          <button onclick="editarDepartamento(event, ${dep.id}, '${dep.nombre}')">Editar</button>
+          <button onclick="eliminarDepartamentoDB(event, ${dep.id})">Eliminar</button>
+        </span>
+      </td>
+    `;
+    fila.onclick = () => seleccionarDepartamento(fila);
+    cuerpoTabla.appendChild(fila);
+  });
+}
+
+async function crearDepartamento() {
+  const nombre = document.getElementById("nuevoNombreDepartamento").value;
+  if (!nombre.trim()) return alert("Escribe un nombre válido");
+  try {
+    const res = await fetch("http://127.0.0.1:3000/departamentos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre })
+    });
+    if (res.ok) {
+      await listarDepartamentosModal();
+      await cargarDepartamentosEnSelect();
+    }
+  } catch (error) {
+    console.error("Error al crear departamento:", error);
+  }
+}
+
+let filaSeleccionada = null;
+
+function seleccionarDepartamento(fila) {
+  const yaSeleccionada = fila === filaSeleccionada;
+
+  // Quitar estilos y ocultar botones en todas las filas
+  document.querySelectorAll("#tabla-departamentos tbody tr").forEach(tr => {
+    tr.style.backgroundColor = "";
+    const acciones = tr.querySelector(".acciones");
+    if (acciones) acciones.style.display = "none";
+  });
+
+  if (yaSeleccionada) {
+    filaSeleccionada = null;
+  } else {
+    fila.style.backgroundColor = "#c6f7c3"; // verde claro
+    const acciones = fila.querySelector(".acciones");
+    if (acciones) acciones.style.display = "inline-block";
+    filaSeleccionada = fila;
+  }
+}
+
+async function editarDepartamento(event, id, nombreActual) {
+  event.stopPropagation();
+  const nuevoNombre = prompt("Editar nombre del departamento:", nombreActual);
+  if (!nuevoNombre || !nuevoNombre.trim()) return;
+
+  try {
+    const res = await fetch(`http://127.0.0.1:3000/departamentos/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre: nuevoNombre.trim() })
+    });
+    if (res.ok) {
+      await listarDepartamentosModal();
+      await cargarDepartamentosEnSelect();
+      filaSeleccionada = null;
+    }
+  } catch (error) {
+    console.error("Error al editar departamento:", error);
+  }
+}
+
+async function eliminarDepartamentoDB(event, id) {
+  event.stopPropagation();
+  if (!confirm("¿Eliminar este departamento?")) return;
+  try {
+    const res = await fetch(`http://127.0.0.1:3000/departamentos/${id}`, {
+      method: "DELETE"
+    });
+    if (res.ok) {
+      await listarDepartamentosModal();
+      await cargarDepartamentosEnSelect();
+      filaSeleccionada = null;
+    }
+  } catch (error) {
+    console.error("Error al eliminar departamento:", error);
+  }
+}
+
+function cerrarModalDepartamentos() {
+  document.getElementById("modalDepartamentos").style.display = "none";
+  filaSeleccionada = null;
+}
+
+async function crearDepartamento() {
+  const nombre = document.getElementById("nuevoNombreDepartamento").value.trim();
+
+  if (!nombre) {
+    alert("Escribe un nombre válido para el departamento.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://127.0.0.1:3000/departamentos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre })
+    });
+
+    if (res.ok) {
+      document.getElementById("nuevoNombreDepartamento").value = ""; // limpiar campo
+      await listarDepartamentosModal(); // actualizar tabla
+      await cargarDepartamentosEnSelect(); // actualizar select
+    } else {
+      alert("Error al crear el departamento.");
+    }
+  } catch (error) {
+    console.error("Error al crear departamento:", error);
+    alert("Ocurrió un error al conectar con el servidor.");
+  }
+}
