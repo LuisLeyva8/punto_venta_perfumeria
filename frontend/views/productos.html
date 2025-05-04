@@ -1,7 +1,5 @@
 <link rel="stylesheet" href="/frontend/css/produtos.css" />
 
-
-
 <section class="productos-panel">
   <h2>Nuevo Producto</h2>
 
@@ -16,12 +14,46 @@
       <input type="text" id="descripcion" name="descripcion">
     </div>
 
+    <!-- Tipo de venta -->
     <div class="grupo-form">
-      <label>Se vende</label>
+      <label>Tipo de Venta</label>
       <div class="radios">
         <label><input type="radio" name="tipoVenta" value="unidad" checked> Por Unidad/Pza</label>
         <label><input type="radio" name="tipoVenta" value="granel"> A Granel (Decimales)</label>
-        <label><input type="radio" name="tipoVenta" value="paquete"> Como paquete (kit)</label>
+      </div>
+    </div>
+
+    <!-- Select de tipo de granel -->
+    <div class="grupo-form" id="opcionesGranel" style="display: none;">
+      <label for="unidadGranel"><strong>Tipo de granel</strong></label><br>
+      <select id="unidadGranel" name="unidadGranel">
+        <option value="ml">Mililitros (ml)</option>
+        <option value="kg">Kilogramos (kg)</option>
+      </select>
+    </div>
+
+    <!-- ¿Este producto pertenece a un kit? -->
+    <div class="grupo-form">
+      <label><input type="checkbox" id="esParteDeKit"> Este producto pertenece a un kit</label>
+    </div>
+
+    <div id="seleccionKit" class="grupo-form" style="display: none;">
+      <label for="buscarKit">Buscar Kit (por código o nombre)</label>
+      <input type="text" id="buscarKit" placeholder="Ej. KIT001 o Shampoo + Cepillo">
+      <div id="resultadosKit" class="resultado-busqueda"></div>
+      <button type="button" id="btnNuevoKit" class="secundario">+ Crear Nuevo Kit</button>
+    </div>
+
+    <!-- Modal para crear nuevo kit -->
+    <div id="modalKit" class="modal" style="display: none;">
+      <div class="modal-contenido">
+        <h3>Crear Nuevo Kit</h3>
+        <label for="codigoNuevoKit">Código</label>
+        <input type="text" id="codigoNuevoKit">
+        <label for="nombreNuevoKit">Nombre</label>
+        <input type="text" id="nombreNuevoKit">
+        <button type="button" id="guardarKit">Guardar Kit</button>
+        <button type="button" id="cerrarModalKit">Cancelar</button>
       </div>
     </div>
 
@@ -77,3 +109,5 @@
     </div>
   </form>
 </section>
+
+<script src="/frontend/js/productos.js"></script>

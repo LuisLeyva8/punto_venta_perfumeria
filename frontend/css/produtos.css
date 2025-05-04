@@ -106,3 +106,38 @@
   border-radius: 6px;
   font-weight: 500;
 }
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.resultado-busqueda {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+.opcion-kit {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.opcion-kit:hover {
+  background: #ddd;
+}

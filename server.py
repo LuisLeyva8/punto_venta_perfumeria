@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, request
 import pymysql
 from flask_cors import CORS
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)  # ✅ Primero creas app
 CORS(app, resources={r"/*": {"origins": "*"}})  # ✅ Luego aplicas CORS al app
-
 db_config = {
     "host": "localhost",
     "user": "root",  
@@ -181,6 +181,83 @@ def dinero_en_caja():
     except Exception as e:
         print("🚨 Error en /dinero-en-caja:", str(e))
         return jsonify({'error': 'Error al consultar dinero en caja'}), 500
+
+CORS(app)
+mysql = MySQL(app)
+
+@app.route('/producto', methods=['POST'])
+def guardar_producto():
+    try:
+        data = request.get_json()
+
+        tipo_producto = data['tipoProducto']
+        unidad = data['unidad']
+        codigo_kit = data.get('codigoKit') or None  # Puede venir como null o vacío
+
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO productos (
+                codigo_barras, descripcion, tipo_producto,
+                precio_costo, precio_venta, precio_mayoreo,
+                cantidad, minimo_inventario, departamento, unidad, codigo_kit
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            data['codigo'],
+            data['descripcion'],
+            tipo_producto,
+            data['precioCosto'],
+            data['precioVenta'],
+            data['precioMayoreo'],
+            data['cantidad'],
+            data['minimo'],
+            data['departamento'],
+            unidad,
+            codigo_kit
+        ))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Producto guardado correctamente'}), 200
+
+    except Exception as e:
+        print("❌ ERROR AL GUARDAR PRODUCTO:")
+        traceback.print_exc()
+        return jsonify({'message': f'Error al guardar producto: {str(e)}'}), 500
+
+
+@app.route('/kits', methods=['GET'])
+def buscar_kits():
+    buscar = request.args.get('buscar', '')
+    connection = pymysql.connect(**db_config)
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT codigo, nombre FROM kits WHERE codigo LIKE %s OR nombre LIKE %s", 
+                   (f"%{buscar}%", f"%{buscar}%"))
+    kits = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return jsonify(kits)
+
+@app.route('/kits', methods=['POST'])
+def crear_kit():
+    data = request.get_json()
+    try:
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO kits (codigo, nombre) VALUES (%s, %s)", 
+                       (data['codigo'], data['nombre']))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({'message': 'Kit creado exitosamente'}), 201
+    except Exception as e:
+        print("Error al crear kit:", e)
+        return jsonify({'message': f'Error: {str(e)}'}), 500
+
+
 
 
 

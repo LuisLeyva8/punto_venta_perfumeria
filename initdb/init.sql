@@ -6,17 +6,26 @@ CREATE DATABASE IF NOT EXISTS perfumeria_pdv;
 USE perfumeria_pdv;
 
 -- Crear tablas
+CREATE TABLE IF NOT EXISTS kits (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(50) UNIQUE,
+    nombre VARCHAR(255)
+);
+
 CREATE TABLE IF NOT EXISTS productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo_barras VARCHAR(50) UNIQUE,
     descripcion VARCHAR(255),
-    tipo_producto ENUM('normal', 'liquido') DEFAULT 'normal',
+    tipo_producto ENUM('normal', 'liquido','granel_solido') DEFAULT 'normal',
     precio_costo DECIMAL(10,2),
     precio_venta DECIMAL(10,2),
     precio_mayoreo DECIMAL(10,2),
-    cantidad DECIMAL(10,2),
-    minimo_inventario DECIMAL(10,2) DEFAULT 0,
-    departamento VARCHAR(100)
+    cantidad DECIMAL(10,2) DEFAULT 0 CHECK (cantidad >= 0),
+    minimo_inventario DECIMAL(10,2) DEFAULT 0 CHECK (minimo_inventario >= 0),
+    departamento VARCHAR(100),
+    unidad ENUM('pz', 'ml', 'kg') DEFAULT 'pz',
+    codigo_kit VARCHAR(50),
+    FOREIGN KEY (codigo_kit) REFERENCES kits(codigo) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS clientes (
@@ -77,12 +86,48 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 
 -- Insertar datos en productos
-INSERT INTO productos (codigo_barras, descripcion, tipo_producto, precio_costo, precio_venta, precio_mayoreo, cantidad, minimo_inventario, departamento) VALUES
-('7501011132345', 'Perfume Hombre 100ml', 'liquido', 150.00, 300.00, 280.00, 25, 5, 'Perfumería'),
-('7501011132346', 'Perfume Mujer 90ml', 'liquido', 160.00, 320.00, 290.00, 30, 5, 'Perfumería'),
-('7501011132347', 'Aromatizante Ambiental 500ml', 'liquido', 50.00, 95.00, 85.00, 40, 10, 'Ambientadores'),
-('7501011132348', 'Jabón de Tocador 150g', 'normal', 20.00, 45.00, 40.00, 50, 10, 'Higiene Personal'),
-('7501011132349', 'Aceite Esencial Lavanda 30ml', 'liquido', 70.00, 140.00, 130.00, 15, 5, 'Aceites Esenciales');
+
+INSERT INTO kits (codigo, nombre) VALUES
+('KIT001', 'Kit Belleza'),
+('KIT002', 'Kit Aromaterapia'),
+('KIT003', 'Kit Hogar');
+
+INSERT INTO productos (
+    codigo_barras, descripcion, tipo_producto,
+    precio_costo, precio_venta, precio_mayoreo,
+    cantidad, minimo_inventario, departamento,
+    unidad, codigo_kit
+) VALUES
+('PROD0001', 'Producto de prueba 1', 'normal', 45.04, 67.56, 60.80, 69.44, 4.22, 'Perfumería', 'pz', 'KIT002'),
+('PROD0002', 'Producto de prueba 2', 'liquido', 21.93, 32.89, 29.60, 49.43, 9.59, 'Belleza', 'kg', 'KIT002'),
+('PROD0003', 'Producto de prueba 3', 'liquido', 14.16, 21.24, 19.12, 60.81, 6.44, 'Belleza', 'ml', 'KIT001'),
+('PROD0004', 'Producto de prueba 4', 'normal', 30.50, 45.75, 41.18, 31.01, 2.44, 'Hogar', 'pz', 'KIT002'),
+('PROD0005', 'Producto de prueba 5', 'normal', 49.69, 74.53, 67.08, 33.55, 4.70, 'Perfumería', 'pz', NULL),
+('PROD0006', 'Producto de prueba 6', 'liquido', 13.81, 20.72, 18.65, 27.89, 8.66, 'Oficina', 'ml', NULL),
+('PROD0007', 'Producto de prueba 7', 'normal', 20.41, 30.62, 27.56, 66.88, 8.30, 'Belleza', 'pz', 'KIT003'),
+('PROD0008', 'Producto de prueba 8', 'normal', 13.56, 20.34, 18.31, 67.52, 6.55, 'Aromas', 'pz', NULL),
+('PROD0009', 'Producto de prueba 9', 'normal', 13.34, 20.01, 18.01, 47.23, 9.45, 'Hogar', 'pz', NULL),
+('PROD0010', 'Producto de prueba 10', 'liquido', 14.38, 21.57, 19.41, 94.80, 6.50, 'Hogar', 'ml', 'KIT001'),
+('PROD0011', 'Producto de prueba 11', 'normal', 33.55, 50.33, 45.30, 65.82, 7.63, 'Perfumería', 'pz', NULL),
+('PROD0012', 'Producto de prueba 12', 'normal', 11.89, 17.83, 16.05, 92.58, 2.46, 'Oficina', 'pz', NULL),
+('PROD0013', 'Producto de prueba 13', 'liquido', 34.73, 52.10, 46.89, 43.55, 8.75, 'Perfumería', 'ml', NULL),
+('PROD0014', 'Producto de prueba 14', 'liquido', 37.81, 56.72, 51.05, 33.12, 2.46, 'Hogar', 'ml', 'KIT003'),
+('PROD0015', 'Producto de prueba 15', 'liquido', 34.68, 52.02, 46.82, 53.63, 6.44, 'Belleza', 'ml', 'KIT003'),
+('PROD0016', 'Producto de prueba 16', 'liquido', 12.41, 18.62, 16.76, 56.63, 1.77, 'Aromas', 'ml', NULL),
+('PROD0017', 'Producto de prueba 17', 'normal', 39.93, 59.90, 53.91, 63.23, 2.73, 'Perfumería', 'pz', NULL),
+('PROD0018', 'Producto de prueba 18', 'liquido', 25.38, 38.07, 34.26, 20.42, 6.00, 'Hogar', 'ml', 'KIT002'),
+('PROD0019', 'Producto de prueba 19', 'liquido', 39.86, 59.79, 53.81, 75.15, 6.64, 'Perfumería', 'ml', NULL),
+('PROD0020', 'Producto de prueba 20', 'liquido', 11.70, 17.55, 15.79, 89.96, 2.76, 'Aromas', 'ml', NULL),
+('PROD0021', 'Producto de prueba 21', 'liquido', 38.88, 58.32, 52.49, 43.59, 1.99, 'Aromas', 'ml', 'KIT003'),
+('PROD0022', 'Producto de prueba 22', 'normal', 47.58, 71.37, 64.24, 12.50, 4.69, 'Belleza', 'pz', NULL),
+('PROD0023', 'Producto de prueba 23', 'normal', 31.20, 46.80, 42.12, 57.09, 8.93, 'Oficina', 'pz', 'KIT001'),
+('PROD0024', 'Producto de prueba 24', 'normal', 18.69, 28.04, 25.24, 91.28, 7.94, 'Belleza', 'pz', NULL),
+('PROD0025', 'Producto de prueba 25', 'liquido', 38.69, 58.04, 52.24, 89.50, 1.38, 'Aromas', 'ml', NULL),
+('PROD0026', 'Producto de prueba 26', 'liquido', 12.70, 19.05, 17.14, 19.41, 6.77, 'Hogar', 'ml', 'KIT001'),
+('PROD0027', 'Producto de prueba 27', 'normal', 40.38, 60.57, 54.51, 22.90, 4.44, 'Perfumería', 'pz', NULL),
+('PROD0028', 'Producto de prueba 28', 'normal', 24.69, 37.04, 33.34, 71.82, 5.94, 'Hogar', 'pz', NULL),
+('PROD0029', 'Producto de prueba 29', 'liquido', 19.10, 28.65, 25.78, 41.58, 4.20, 'Aromas', 'ml', NULL),
+('PROD0030', 'Producto de prueba 30', 'liquido', 22.36, 33.54, 30.19, 71.52, 5.21, 'Oficina', 'ml', NULL);
 
 -- Insertar datos en clientes
 INSERT INTO clientes (nombre_completo, direccion, telefono, limite_credito, saldo_actual, suscripcion_activa, monto_minimo_mensual, fecha_ultimo_pago_mensual) VALUES
