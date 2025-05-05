@@ -385,3 +385,92 @@ function actualizarEstadoTabla() {
   }
 }
 
+let tickets = [];
+let currentTicket = 0;
+
+function addTicket() {
+  const index = tickets.length;
+  tickets.push([]);
+  
+  const tab = document.createElement("div");
+  tab.className = "ticket-tab";
+  tab.innerHTML = `
+    <button onclick="switchTicket(${index})" class="tab-button">Ticket ${index + 1}</button>
+    <span class="close-tab" onclick="cerrarTicket(${index}, event)">×</span>
+  `;
+  document.getElementById("ticket-tabs").appendChild(tab);
+  switchTicket(index);
+}
+
+function switchTicket(index) {
+  currentTicket = index;
+  renderTicket();
+  document.querySelectorAll(".tab-button").forEach((btn, i) => {
+    btn.classList.toggle("active", i === index);
+  });
+}
+
+
+
+
+function renderTicket() {
+  const lista = document.getElementById("lista-venta");
+  lista.innerHTML = ""; // Limpia lista actual
+  const productos = tickets[currentTicket];
+
+  if (productos.length === 0) {
+    document.getElementById("mensajeVacio").style.display = "block";
+  } else {
+    document.getElementById("mensajeVacio").style.display = "none";
+    productos.forEach(prod => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${prod.codigo}</td>
+        <td>${prod.descripcion}</td>
+        <td>${prod.precio}</td>
+        <td>${prod.cantidad}</td>
+        <td>${prod.precio * prod.cantidad}</td>
+        <td>${prod.existencia}</td>
+      `;
+      lista.appendChild(row);
+    });
+  }
+}
+
+// Esto lo llamarías desde tu lógica actual de agregar productos
+function agregarProductoAlTicket(prod) {
+  tickets[currentTicket].push(prod);
+  renderTicket();
+}
+
+// Inicializa primer ticket
+window.onload = () => {
+  addTicket();
+};
+
+function cerrarTicket(index, e) {
+  e.stopPropagation(); // Previene que se active el switchTicket
+
+  if (tickets.length === 1) {
+    alert("Debe haber al menos un ticket activo.");
+    return;
+  }
+
+  tickets.splice(index, 1); // Elimina el ticket
+
+  // Vuelve a generar las pestañas
+  const tabsContainer = document.getElementById("ticket-tabs");
+  tabsContainer.innerHTML = `<button onclick="addTicket()">+ Nuevo Ticket</button>`;
+  tickets.forEach((_, i) => {
+    const tab = document.createElement("div");
+    tab.className = "ticket-tab";
+    tab.innerHTML = `
+      <button onclick="switchTicket(${i})" class="tab-button">Ticket ${i + 1}</button>
+      <span class="close-tab" onclick="cerrarTicket(${i}, event)">×</span>
+    `;
+    tabsContainer.appendChild(tab);
+  });
+
+  currentTicket = Math.max(0, index - 1); // Cambia a uno anterior si cerraste el actual
+  switchTicket(currentTicket);
+}

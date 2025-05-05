@@ -1,88 +1,205 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f3f4f6;
+  padding: 2rem;
+}
+
 .clientes-panel {
-    background: white;
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: auto;
+}
+
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  gap: 1.5rem;
+}
+
+#buscadorClientes {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.btn-accion {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tabla-clientes table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-clientes th,
+.tabla-clientes td {
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+/* MODAL */
+.modal-cliente {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-contenido.modal-rectangular {
+
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 850px;
+  margin: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75);
+}
+
+.titulo-modal {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+  color: #111827;
+}
+
+.encabezado-cliente {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.foto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.foto-container img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #10b981;
+  margin-bottom: 0.5rem;
+}
+
+.foto-container input[type="file"] {
+  font-size: 0.85rem;
+}
+
+.info-basica {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 2rem;
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.grupo label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.grupo input,
+.grupo select {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  transition: box-shadow 0.2s ease;
+}
+
+.grupo input:focus,
+.grupo select:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.acciones-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-guardar,
+.btn-cancelar {
+  min-width: 100px;
+  font-weight: bold;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-guardar {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-guardar:hover {
+  background-color: #059669;
+}
+
+.btn-cancelar {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background-color: #dc2626;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .barra-acciones {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .barra-acciones button {
-    padding: 0.6rem 1rem;
-    font-weight: bold;
-    border: none;
-    background-color: var(--color-border);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  
-  .barra-acciones .activo {
-    background-color: var(--color-accent);
-    color: white;
-  }
-  
-  .barra-acciones .secundario {
-    margin-left: auto;
-    background-color: var(--color-bg);
-    color: var(--color-text);
-  }
-  
-  .estado-cuenta label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-  }
-  
-  .estado-cuenta input {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    margin-bottom: 1rem;
-  }
-  
-  .tabla-clientes table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-  }
-  
-  .tabla-clientes th,
-  .tabla-clientes td {
-    padding: 0.5rem;
-    border: 1px solid var(--color-border);
-    text-align: left;
-  }
-  
-  .tabla-clientes thead {
-    background-color: var(--color-bg);
-  }
-  
-  .acciones-clientes {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-  }
-  
-  .btn-confirmar {
-    background-color: var(--color-accent);
-    color: white;
-    padding: 0.7rem 2rem;
-    font-weight: bold;
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-  }
-  
-  .btn-confirmar:hover {
-    background-color: #059669;
-  }
-  
+}

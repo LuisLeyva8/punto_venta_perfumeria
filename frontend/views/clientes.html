@@ -1,41 +1,72 @@
 <link rel="stylesheet" href="/frontend/css/clientes.css" />
-
-
 <section class="clientes-panel">
-  <h2>Crédito a Clientes</h2>
+  <h2>👥 Gestión de Clientes</h2>
 
-  <div class="barra-acciones">
-    <button class="activo">Estado de Cuenta</button>
-    <button>Nuevo Cliente</button>
-    <button>Modificar Cliente</button>
-    <button>Eliminar Cliente</button>
-    <button class="secundario">Reporte de Saldos</button>
+  <div class="barra-superior">
+    <button class="btn-accion" onclick="abrirModalCliente()">+ Nuevo Cliente</button>
+    <input type="text" id="buscadorClientes" placeholder="🔍 Buscar cliente...">
   </div>
 
-  <div class="estado-cuenta">
-    <h3>Estado de Cuenta</h3>
-    <label for="busquedaCliente">Teclee el Número o Nombre del cliente:</label>
-    <input type="text" id="busquedaCliente" placeholder="Ej. Juan Perez o 123">
-
-    <div class="tabla-clientes">
-      <table>
-        <thead>
-          <tr><th>#</th><th>Nombre del Cliente</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>0</td><td>ELIZABETH VILCHIS GUADARRAMA</td></tr>
-          <tr><td>1</td><td>MARIA ANGELICA SALAZAR GUZMAN</td></tr>
-          <tr><td>2</td><td>YOSENDI JAHZEEL MARTINEZ AVILA</td></tr>
-          <tr><td>3</td><td>IVVONNE BETANZOS</td></tr>
-          <tr><td>4</td><td>CLAUDIA GIL LORA</td></tr>
-          <tr><td>5</td><td>MIRIAM GABRIELA ZABALA LAZRO</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="acciones-clientes">
-      <button class="btn-confirmar">Aceptar</button>
-    </div>
+  <div class="tabla-clientes">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre completo</th>
+          <th>Tipo</th>
+          <th>Teléfono</th>
+        </tr>
+      </thead>
+      <tbody id="listadoClientes">
+        <!-- Clientes se insertan aquí -->
+      </tbody>
+    </table>
   </div>
 </section>
-<script src="/frontend/js/clientes.js"></script>
+
+<div class="modal-cliente" id="modalCliente" style="display: none;">
+  <div class="modal-contenido modal-rectangular">
+    <h2 class="titulo-modal">📋 Ficha del Cliente</h2>
+
+    <form id="formCliente" class="form-cliente">
+      <!-- Encabezado con foto + datos -->
+      <div class="encabezado-cliente">
+        <div class="foto-container">
+          <img id="fotoPreview" src="/frontend/img/default-profile.png" alt="Foto Cliente" />
+          <input type="file" id="fotoCliente" accept="image/*" onchange="previewFoto(event)" />
+        </div>
+        <div class="info-basica">
+          <div class="grupo">
+            <label for="nombreCliente">Nombre:</label>
+            <input type="text" id="nombreCliente" required />
+          </div>
+          <div class="grupo">
+            <label for="telefonoCliente">Teléfono:</label>
+            <input type="tel" id="telefonoCliente" />
+          </div>
+          <div class="grupo">
+            <label for="correoCliente">Correo:</label>
+            <input type="email" id="correoCliente" />
+          </div>
+          <div class="grupo">
+            <label for="descuentoCliente">Descuento (%):</label>
+            <input type="number" id="descuentoCliente" min="0" max="100" value="0" />
+          </div>
+          <div class="grupo">
+            <label for="fechaRegistro">Fecha de Registro:</label>
+            <input type="date" id="fechaRegistro" disabled />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="acciones-modal">
+        <button type="submit" class="btn-guardar">Guardar</button>
+        <button type="button" class="btn-cancelar" onclick="cerrarModalCliente()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="clientes.js"></script>
