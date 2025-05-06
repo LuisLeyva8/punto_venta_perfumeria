@@ -1,16 +1,16 @@
 <link rel="stylesheet" href="./css/ventas.css" />
 <link rel="stylesheet" href="/frontend/css/ventas.css"/>
 <section class="ventas-panel">
-  <h2>VENTA DE PRODUCTOS - Ticket 1</h2>
-  
+  <h2 id="titulo-ticket">VENTA DE PRODUCTOS - Ticket 1</h2>
+
   <div id="ticket-tabs" style="margin-bottom: 10px;">
     <button onclick="addTicket()">+ Nuevo Ticket</button>
   </div>
-  
+
   <div class="entrada-producto">
     <label for="codigo">Código del Producto:</label>
     <input type="text" id="codigo" placeholder="Escanea o escribe el código...">
-    <button id="agregarProducto">ENTER - Agregar Producto</button>
+    <button id="agregarProducto" onclick="">ENTER - Agregar Producto</button>
   </div>
 
   <div class="acciones-venta">
@@ -36,10 +36,14 @@
         </tr>
       </thead>
       <tbody id="lista-venta">
-        <div id="mensajeVacio" style="display: none; text-align: center; margin-top: 10px; font-style: italic; color: gray;">
-          No hay productos agregados todavía.
-        </div>
+        <!-- Las filas de productos se agregan aquí -->
       </tbody>
+      </table>
+      
+      <div id="mensajeVacio" style="display: none; text-align: center; margin-top: 10px; font-style: italic; color: gray;">
+        No hay productos agregados todavía.
+      </div>
+      
     </table>
   </div>
 
@@ -133,6 +137,4 @@
   </div>
 </div>
 
-
-
-<script src="/frontend/js/ventas.js"></script>
+<script src="/frontend/js/ventas.js" defer></script>
