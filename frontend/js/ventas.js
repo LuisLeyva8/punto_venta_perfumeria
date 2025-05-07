@@ -603,6 +603,48 @@ function cerrarTicket(index, e) {
 
 
 
+function agregarOActualizarProducto(producto, cantidadAgregar) {
+  const ticket = tickets[currentTicket];
+  const productos = ticket.productos;
+  let encontrado = false;
 
+  for (let i = 0; i < productos.length; i++) {
+    if (productos[i].codigo === producto.codigo_barras) {
+      productos[i].cantidad += cantidadAgregar;
+      encontrado = true;
+      break;
+    }
+  }
+
+  if (!encontrado) {
+    productos.push({
+      codigo: producto.codigo_barras,
+      descripcion: producto.descripcion,
+      precio: parseFloat(producto.precio_venta),
+      cantidad: cantidadAgregar,
+      existencia: producto.cantidad
+    });
+  }
+
+  renderTicket();
+}
+
+function cambiarCantidadDesdeFila(boton, cambio) {
+  const fila = boton.closest("tr");
+  const codigo = fila.cells[0].textContent.trim();
+  const productos = tickets[currentTicket].productos;
+  const producto = productos.find(p => p.codigo === codigo);
+  if (!producto) return;
+
+  producto.cantidad += cambio;
+  if (producto.cantidad < 1) producto.cantidad = 1;
+
+  renderTicket();
+}
+
+window.addEventListener("load", () => {
+  addTicket(); // este se encarga de crear y mostrar Ticket 1 correctamente
+  console.log("Ticket 1 generado al cargar.");
+});
 
 
