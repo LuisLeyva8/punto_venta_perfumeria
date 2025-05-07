@@ -287,3 +287,271 @@
 #ticket-tabs > button:hover {
   background-color: #2980b9;
 }
+
+/* Estilos generales del modal */
+#modalINS {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Contenedor del contenido */
+#modalINS .modal-content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Encabezado */
+#modalINS .modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+/* Inputs */
+#modalINS input[type="text"],
+#modalINS input[type="number"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* Botones */
+#modalINS .modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#modalINS button {
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Botón Agregar */
+#modalINS button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+#modalINS button:first-child:hover {
+  background-color: #218838;
+}
+
+/* Botón Cancelar */
+#modalINS button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+#modalINS button:last-child:hover {
+  background-color: #c82333;
+}
+
+
+/* Reutiliza los estilos generales del modal */
+#modalComun {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#modalComun .modal-content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Título del modal */
+#modalComun .modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+/* Estilo para todos los inputs */
+#modalComun input[type="text"],
+#modalComun input[type="number"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botones del modal */
+#modalComun .modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+#modalComun button {
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Botón Aceptar */
+#modalComun button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+#modalComun button:first-child:hover {
+  background-color: #218838;
+}
+
+/* Botón Cancelar */
+#modalComun button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+#modalComun button:last-child:hover {
+  background-color: #c82333;
+}
+
+/* Fondo oscuro translúcido */
+#modalBuscar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Contenedor del modal */
+#modalBuscar .modal-content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Título */
+#modalBuscar h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Campo de búsqueda */
+#modalBuscar input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+/* Tabla de resultados */
+#tablaResultadosBuscar {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+#tablaResultadosBuscar th,
+#tablaResultadosBuscar td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+}
+
+#tablaResultadosBuscar tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#tablaResultadosBuscar thead th {
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+/* Botones */
+#modalBuscar .modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+#modalBuscar button {
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Botón Aceptar */
+#modalBuscar button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+#modalBuscar button:first-child:hover {
+  background-color: #218838;
+}
+
+/* Botón Cancelar */
+#modalBuscar button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+#modalBuscar button:last-child:hover {
+  background-color: #c82333;
+}

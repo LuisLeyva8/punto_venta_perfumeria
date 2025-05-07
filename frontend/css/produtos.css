@@ -148,3 +148,248 @@
 #tabla-departamentos tr:hover {
   cursor: pointer;
 }
+
+/* Fondo oscuro del modal */
+#modalDepartamentos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Contenedor del contenido */
+#modalDepartamentos .modal-contenido {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Encabezado */
+#modalDepartamentos h2,
+#modalDepartamentos h3 {
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+}
+
+/* Campo de entrada */
+#nuevoNombreDepartamento {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botones principales */
+#modalDepartamentos button {
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  margin: 0.5rem 0.3rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Botón Guardar */
+#modalDepartamentos button:first-of-type {
+  background-color: #28a745;
+  color: white;
+}
+
+#modalDepartamentos button:first-of-type:hover {
+  background-color: #218838;
+}
+
+/* Botón Cancelar */
+#modalDepartamentos button:nth-of-type(2) {
+  background-color: #dc3545;
+  color: white;
+}
+
+#modalDepartamentos button:nth-of-type(2):hover {
+  background-color: #c82333;
+}
+
+/* Tabla de departamentos */
+#tabla-departamentos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+#tabla-departamentos th,
+#tabla-departamentos td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+#tabla-departamentos tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Botones de acciones extra (Editar/Eliminar) */
+#acciones-departamento {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+#acciones-departamento button {
+  background-color: #ffc107;
+  color: #000;
+}
+
+#acciones-departamento button:hover {
+  background-color: #e0a800;
+}
+
+/* Contenedor de selección de kit */
+#seleccionKit {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+#seleccionKit label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+#seleccionKit input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  box-sizing: border-box;
+}
+
+/* Resultados de búsqueda */
+#resultadosKit {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem;
+  background-color: #fff;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+/* Botón para crear nuevo kit */
+#btnNuevoKit {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#btnNuevoKit:hover {
+  background-color: #0069d9;
+}
+
+/* Modal para crear kit */
+#modalKit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#modalKit .modal-contenido {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Título y etiquetas del modal */
+#modalKit h3 {
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+}
+
+#modalKit label {
+  display: block;
+  font-weight: bold;
+  margin: 0.8rem 0 0.4rem;
+  color: #555;
+}
+
+#modalKit input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Botones del modal */
+#modalKit button {
+  margin-top: 1rem;
+  margin-right: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Guardar Kit */
+#guardarKit {
+  background-color: #28a745;
+  color: white;
+}
+
+#guardarKit:hover {
+  background-color: #218838;
+}
+
+/* Cancelar */
+#cerrarModalKit {
+  background-color: #dc3545;
+  color: white;
+}
+
+#cerrarModalKit:hover {
+  background-color: #c82333;
+}

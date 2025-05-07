@@ -476,27 +476,3 @@ function cerrarTicket(index, e) {
 }
 
 
-function agregarOActualizarProducto(producto, cantidadAgregar) {
-  const ticket = tickets[currentTicket];
-  let encontrado = false;
-
-  for (let i = 0; i < ticket.length; i++) {
-    if (ticket[i].codigo === producto.codigo_barras) {
-      ticket[i].cantidad += cantidadAgregar;
-      encontrado = true;
-      break;
-    }
-  }
-
-  if (!encontrado) {
-    ticket.push({
-      codigo: producto.codigo_barras,
-      descripcion: producto.descripcion,
-      precio: parseFloat(producto.precio_venta),
-      cantidad: cantidadAgregar,
-      existencia: producto.cantidad
-    });
-  }
-
-  renderTicket();
-}
