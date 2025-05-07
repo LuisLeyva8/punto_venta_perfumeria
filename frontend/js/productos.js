@@ -138,14 +138,24 @@ document.getElementById('buscarKit').addEventListener('input', async (e) => {
 
 
 async function cargarDepartamentosEnSelect() {
-  const res = await fetch("http://127.0.0.1:3000/departamentos");
-  const data = await res.json();
-  const select = document.getElementById("departamento");
-  select.innerHTML = '<option value="">Sin Departamento</option>';
-  data.forEach(dep => {
-    select.innerHTML += `<option value="${dep.id}">${dep.nombre}</option>`;
-  });
+  console.log("Cargando departamentos...");
+  try {
+    const res = await fetch("http://127.0.0.1:3000/departamentos");
+    console.log("Respuesta del servidor:", res);
+
+    if (!res.ok) throw new Error("Error al cargar departamentos");
+    const data = await res.json();
+    console.log("Departamentos recibidos:", data);
+    const select = document.getElementById("departamento");
+    select.innerHTML = '<option value="">Sin Departamento</option>';
+    data.forEach(dep => {
+      select.innerHTML += `<option value="${dep.id}">${dep.nombre}</option>`;
+    });
+  } catch (error) {
+    console.error("Error al cargar departamentos:", error);
+  }
 }
+
 
 async function abrirModalDepartamentos() {
   document.getElementById("modalDepartamentos").style.display = "flex";
@@ -175,23 +185,6 @@ async function listarDepartamentosModal() {
   });
 }
 
-async function crearDepartamento() {
-  const nombre = document.getElementById("nuevoNombreDepartamento").value;
-  if (!nombre.trim()) return alert("Escribe un nombre válido");
-  try {
-    const res = await fetch("http://127.0.0.1:3000/departamentos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre })
-    });
-    if (res.ok) {
-      await listarDepartamentosModal();
-      await cargarDepartamentosEnSelect();
-    }
-  } catch (error) {
-    console.error("Error al crear departamento:", error);
-  }
-}
 
 let filaSeleccionada = null;
 
@@ -285,3 +278,4 @@ async function crearDepartamento() {
     alert("Ocurrió un error al conectar con el servidor.");
   }
 }
+

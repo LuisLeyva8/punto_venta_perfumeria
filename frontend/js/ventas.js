@@ -356,21 +356,30 @@ function limpiarSeleccionTabla() {
 
 
 function eliminarArticuloSeleccionado() {
-  const tbody = document.getElementById('lista-venta');
-  const filas = Array.from(tbody.querySelectorAll('tr.seleccionado'));
+  const tbody = document.getElementById("lista-venta");
+  const filas = Array.from(tbody.querySelectorAll("tr.seleccionado"));
   let algunaFilaEliminada = false;
 
+  const productos = tickets[currentTicket].productos;
+
   filas.forEach(fila => {
-    fila.remove();
-    algunaFilaEliminada = true;
+    const codigo = fila.cells[0].textContent.trim();
+    // Eliminar del arreglo de productos del ticket actual
+    const index = productos.findIndex(p => p.codigo === codigo);
+    if (index !== -1) {
+      productos.splice(index, 1);
+      algunaFilaEliminada = true;
+    }
   });
 
   if (!algunaFilaEliminada) {
-    alert('Selecciona un producto primero para eliminar.');
+    alert("Selecciona un producto primero para eliminar.");
+    return;
   }
 
-  actualizarEstadoTabla();
+  renderTicket(); // 🔁 vuelve a renderizar la tabla sin los eliminados
 }
+
 
 // Función para mostrar/ocultar mensaje cuando tabla esté vacía
 function actualizarEstadoTabla() {
@@ -385,26 +394,120 @@ function actualizarEstadoTabla() {
   }
 }
 
+let usuarioActual = "admin"; // Usuario actual por defecto
+let tipoMovimiento = ""; // "entrada" o "salida"
+let dineroActual = 0;
+
+async function abrirModalCaja(tipo) {
+  tipoMovimiento = tipo;
+  document.getElementById("tituloModalCaja").textContent = tipo === "entrada" ? "Entrada de Dinero" : "Salida de Dinero";
+  document.getElementById("cantidadCaja").value = "";
+  document.getElementById("mensajeCaja").textContent = "";
+
+  try {
+    const respuesta = await fetch(`http://127.0.0.1:3000/dinero-en-caja?usuario=${usuarioActual}`);
+    const data = await respuesta.json();
+    dineroActual = data.total_en_caja;
+
+    document.getElementById("dineroActualCaja").textContent = `Dinero actual en caja: $${dineroActual.toFixed(2)}`;
+    document.getElementById("modalCaja").style.display = "flex";
+  } catch (error) {
+    console.error("Error al obtener dinero en caja:", error);
+    document.getElementById("mensajeCaja").textContent = "Error al obtener dinero actual.";
+    document.getElementById("modalCaja").style.display = "flex";
+  }
+}
+
+function cerrarModalCaja() {
+  document.getElementById("modalCaja").style.display = "none";
+}
+
+async function confirmarMovimientoCaja() {
+  const cantidad = parseFloat(document.getElementById("cantidadCaja").value);
+
+  if (isNaN(cantidad) || cantidad <= 0) {
+    document.getElementById("mensajeCaja").textContent = "Ingrese una cantidad válida.";
+    return;
+  }
+
+  if (tipoMovimiento === "salida" && cantidad > dineroActual) {
+    document.getElementById("mensajeCaja").textContent = "No hay suficiente dinero en caja.";
+    return;
+  }
+
+  const ruta = tipoMovimiento === "entrada"
+    ? "http://127.0.0.1:3000/entrada"
+    : "http://127.0.0.1:3000/salida";
+
+  try {
+    const respuesta = await fetch(ruta, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cantidad: cantidad, usuario: usuarioActual })
+    });
+
+    const data = await respuesta.json();
+
+    document.getElementById("mensajeCaja").style.color = "green";
+    document.getElementById("mensajeCaja").textContent = data.mensaje;
+    setTimeout(cerrarModalCaja, 1500);
+  } catch (error) {
+    console.error("Error al confirmar movimiento:", error);
+    document.getElementById("mensajeCaja").style.color = "red";
+    document.getElementById("mensajeCaja").textContent = "Error al registrar el movimiento.";
+  }
+}
+
+
 let tickets = [];
 let currentTicket = 0;
+let ticketCounter = 1; // No se reinicia, asegura numeración continua
+
 
 function addTicket() {
-  const index = tickets.length;
-  tickets.push([]);
-  
+  const ticket = {
+    numero: ticketCounter++,
+    productos: []
+  };
+
+  tickets.push(ticket);
+  const index = tickets.length - 1;
+
   const tab = document.createElement("div");
   tab.className = "ticket-tab";
   tab.innerHTML = `
-    <button onclick="switchTicket(${index})" class="tab-button">Ticket ${index + 1}</button>
+    <button onclick="switchTicket(${index})" class="tab-button">Ticket ${ticket.numero}</button>
     <span class="close-tab" onclick="cerrarTicket(${index}, event)">×</span>
   `;
   document.getElementById("ticket-tabs").appendChild(tab);
+
   switchTicket(index);
 }
 
 function switchTicket(index) {
   currentTicket = index;
   renderTicket();
+
+  const ticket = tickets[index];
+  const titulo = document.getElementById("titulo-ticket");
+  if (titulo) {
+    titulo.textContent = `VENTA DE PRODUCTOS - Ticket ${ticket.numero}`;
+  }
+
+  document.querySelectorAll(".tab-button").forEach((btn, i) => {
+    btn.classList.toggle("active", i === index);
+  });
+}
+
+
+
+function switchTicket(index) {
+  currentTicket = index;
+  renderTicket();
+
+  const ticket = tickets[index];
+  document.getElementById("titulo-ticket").textContent = `VENTA DE PRODUCTOS - Ticket ${ticket.numero}`;
+
   document.querySelectorAll(".tab-button").forEach((btn, i) => {
     btn.classList.toggle("active", i === index);
   });
@@ -415,8 +518,9 @@ function switchTicket(index) {
 
 function renderTicket() {
   const lista = document.getElementById("lista-venta");
-  lista.innerHTML = ""; // Limpia lista actual
-  const productos = tickets[currentTicket];
+  lista.innerHTML = "";
+
+  const productos = tickets[currentTicket].productos;
 
   if (productos.length === 0) {
     document.getElementById("mensajeVacio").style.display = "block";
@@ -427,52 +531,78 @@ function renderTicket() {
       row.innerHTML = `
         <td>${prod.codigo}</td>
         <td>${prod.descripcion}</td>
-        <td>${prod.precio}</td>
-        <td>${prod.cantidad}</td>
-        <td>${prod.precio * prod.cantidad}</td>
+        <td>$${prod.precio.toFixed(2)}</td>
+        <td>
+          <button class="btn-cantidad" onclick="cambiarCantidadDesdeFila(this, -1)">-</button>
+          <span class="cantidad">${prod.cantidad}</span>
+          <button class="btn-cantidad" onclick="cambiarCantidadDesdeFila(this, 1)">+</button>
+        </td>
+        <td>$${(prod.precio * prod.cantidad).toFixed(2)}</td>
         <td>${prod.existencia}</td>
       `;
       lista.appendChild(row);
+
+      validarExistencia(row, prod.cantidad, prod.existencia);
     });
   }
 }
 
-// Esto lo llamarías desde tu lógica actual de agregar productos
 function agregarProductoAlTicket(prod) {
   tickets[currentTicket].push(prod);
   renderTicket();
 }
 
-// Inicializa primer ticket
-window.onload = () => {
-  addTicket();
-};
-
 function cerrarTicket(index, e) {
-  e.stopPropagation(); // Previene que se active el switchTicket
+  e.stopPropagation();
 
   if (tickets.length === 1) {
-    alert("Debe haber al menos un ticket activo.");
+    tickets[0].productos = [];
+    renderTicket();
     return;
   }
 
-  tickets.splice(index, 1); // Elimina el ticket
+  tickets.splice(index, 1);
 
-  // Vuelve a generar las pestañas
   const tabsContainer = document.getElementById("ticket-tabs");
   tabsContainer.innerHTML = `<button onclick="addTicket()">+ Nuevo Ticket</button>`;
-  tickets.forEach((_, i) => {
+  tickets.forEach((ticket, i) => {
     const tab = document.createElement("div");
     tab.className = "ticket-tab";
     tab.innerHTML = `
-      <button onclick="switchTicket(${i})" class="tab-button">Ticket ${i + 1}</button>
+      <button onclick="switchTicket(${i})" class="tab-button">Ticket ${ticket.numero}</button>
       <span class="close-tab" onclick="cerrarTicket(${i}, event)">×</span>
     `;
     tabsContainer.appendChild(tab);
   });
 
-  currentTicket = Math.max(0, index - 1); // Cambia a uno anterior si cerraste el actual
+  currentTicket = Math.max(0, index - 1);
   switchTicket(currentTicket);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
