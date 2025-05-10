@@ -138,8 +138,9 @@ function validarExistencia(fila, cantidad, existencia) {
   }
 }
 
-// Listeners
+
 botonAgregar.addEventListener('click', agregarProductoATabla, true);
+
 
 inputCodigo.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
@@ -483,7 +484,7 @@ function addTicket() {
 
   switchTicket(index);
 }
-
+/*
 function switchTicket(index) {
   currentTicket = index;
   renderTicket();
@@ -497,7 +498,7 @@ function switchTicket(index) {
   document.querySelectorAll(".tab-button").forEach((btn, i) => {
     btn.classList.toggle("active", i === index);
   });
-}
+}*/
 
 
 
@@ -579,30 +580,6 @@ function cerrarTicket(index, e) {
   switchTicket(currentTicket);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function agregarOActualizarProducto(producto, cantidadAgregar) {
   const ticket = tickets[currentTicket];
   const productos = ticket.productos;
@@ -642,9 +619,12 @@ function cambiarCantidadDesdeFila(boton, cambio) {
   renderTicket();
 }
 
-window.addEventListener("load", () => {
-  addTicket(); // este se encarga de crear y mostrar Ticket 1 correctamente
-  console.log("Ticket 1 generado al cargar.");
-});
 
-
+(() => {
+addTicket();
+console.log("Ticket 1 generado al cargar.");
+cerrarModalBuscar();
+cerrarModalCaja();
+cerrarModalINS();
+cerrarModalComun();
+})();

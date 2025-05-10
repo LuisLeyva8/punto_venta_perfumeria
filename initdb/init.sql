@@ -37,13 +37,13 @@ CREATE TABLE IF NOT EXISTS productos (
 CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre_completo VARCHAR(255),
-    direccion TEXT,
     telefono VARCHAR(20),
-    limite_credito DECIMAL(10,2),
+    descuento float(5,2),
     saldo_actual DECIMAL(10,2) DEFAULT 0,
-    suscripcion_activa BOOLEAN DEFAULT false,
+    suscripcion_activa BOOLEAN DEFAULT true,
     monto_minimo_mensual DECIMAL(10,2) DEFAULT 0,
-    fecha_ultimo_pago_mensual DATE DEFAULT NULL
+    fecha_ultima_compra DATE DEFAULT NULL,
+    foto LONGBLOB DEFAULT null
 );
 
 CREATE TABLE IF NOT EXISTS ventas (
@@ -135,12 +135,6 @@ INSERT INTO productos (
 ('PROD0029', 'Producto de prueba 29', 'liquido', 19.10, 28.65, 25.78, 41.58, 4.20, 'Aromas', 'ml', NULL),
 ('PROD0030', 'Producto de prueba 30', 'liquido', 22.36, 33.54, 30.19, 71.52, 5.21, 'Oficina', 'ml', NULL);
 
--- Insertar datos en clientes
-INSERT INTO clientes (nombre_completo, direccion, telefono, limite_credito, saldo_actual, suscripcion_activa, monto_minimo_mensual, fecha_ultimo_pago_mensual) VALUES
-('María Fernanda López', 'Calle Jardines #123, CDMX', '5512345678', 1500.00, 200.00, true, 300.00, '2025-04-01'),
-('José Manuel Torres', 'Av. Insurgentes Sur #456, CDMX', '5523456789', 1000.00, 0.00, false, 0.00, NULL),
-('Lucía Hernández Pérez', 'Col. Roma Norte #789, CDMX', '5534567890', 2000.00, 500.00, true, 500.00, '2025-03-28');
-
 -- Insertar datos en usuarios
 INSERT INTO usuarios (nombre_usuario, password, rol, activo) VALUES
 ('admin', 'admin123', 'admin', true),
@@ -164,6 +158,34 @@ INSERT INTO detalle_ventas (id_venta, id_producto, cantidad, precio_unitario, to
 -- Insertar datos en corte_caja
 INSERT INTO corte_caja (fecha, usuario, dinero_inicial, entrada_dinero, ventas_efectivo, ventas_tarjeta, pagos_clientes, pagos_proveedores, total_en_caja, ganancias) VALUES
 ('2025-04-26', 'admin', 1000.00, 500.00, 395.00, 140.00, 300.00, 150.00, 2185.00, 485.00);
+
+
+-- Insertar datos en clientes
+INSERT INTO clientes (
+  nombre_completo, telefono, descuento, saldo_actual, 
+  suscripcion_activa, monto_minimo_mensual, fecha_ultima_compra, foto
+)
+VALUES
+('Juan Pérez', '5551234567', 5.00, 120.50, true, 100.00, '2024-12-15', NULL),
+('María López', '5559876543', 0.00, 0.00, false, 0.00, NULL, NULL),
+('Carlos Sánchez', '5553217890', 10.00, 45.20, true, 75.00, '2025-01-10', NULL),
+('Ana Torres', '5554441122', 0.00, 0.00, false, 0.00, '2025-03-22', NULL),
+('Luis Ramírez', '5559988776', 8.00, 300.00, true, 120.00, '2025-05-01', NULL),
+('Sofía Martínez', '5557654321', 2.00, 15.00, false, 0.00, NULL, NULL),
+('José González', '5551112233', 0.00, 0.00, false, 0.00, '2025-02-28', NULL),
+('Laura Castillo', '5554445566', 6.50, 80.75, true, 90.00, '2025-01-18', NULL),
+('Miguel Díaz', '5556667788', 0.00, 0.00, false, 0.00, NULL, NULL),
+('Isabel Romero', '5558889999', 3.00, 0.00, false, 0.00, '2025-03-10', NULL),
+('Diego Herrera', '5551122334', 5.50, 50.00, true, 80.00, '2025-01-30', NULL),
+('Elena Rivas', '5552233445', 0.00, 0.00, false, 0.00, NULL, NULL),
+('Ricardo Cordero', '5553344556', 7.25, 10.00, true, 60.00, '2025-04-04', NULL),
+('Gabriela Molina', '5554455667', 0.00, 0.00, false, 0.00, NULL, NULL),
+('Pedro Navarro', '5555566778', 1.00, 5.00, false, 0.00, '2025-03-05', NULL),
+('Natalia Cruz', '5556677889', 12.00, 200.00, true, 110.00, '2025-02-12', NULL),
+('Fernando Pineda', '5557788990', 0.00, 0.00, false, 0.00, NULL, NULL),
+('Camila Morales', '5558899001', 9.50, 130.00, true, 95.00, '2025-04-20', NULL),
+('Andrés Medina', '5559900112', 0.00, 0.00, false, 0.00, '2025-01-01', NULL),
+('Valentina León', '5551011123', 4.00, 90.00, true, 85.00, '2025-03-17', NULL);
 
 -- 🔥 Activar validación de Foreign Keys nuevamente
 SET FOREIGN_KEY_CHECKS=1;

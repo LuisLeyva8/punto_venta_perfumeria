@@ -12,6 +12,7 @@ document.getElementById('formProducto').addEventListener('submit', async functio
     unidad = unidadGranel;
     tipoProducto = unidadGranel === 'ml' ? 'liquido' : 'granel_solido';
   }
+
   
 
   const usaInventario = document.getElementById('usaInventario').checked;
@@ -51,6 +52,8 @@ document.getElementById('formProducto').addEventListener('submit', async functio
   }
 });
 
+
+
 const radiosTipoVenta = document.querySelectorAll('input[name="tipoVenta"]');
 const divOpcionesGranel = document.getElementById('opcionesGranel');
 const checkboxParteDeKit = document.getElementById('esParteDeKit');
@@ -62,15 +65,10 @@ radiosTipoVenta.forEach(radio => {
   });
 });
 
+
 checkboxParteDeKit.addEventListener('change', () => {
   divSeleccionKit.style.display = checkboxParteDeKit.checked ? 'block' : 'none';
 });
-
-
-
-
-
-
 
 
 
@@ -278,4 +276,9 @@ async function crearDepartamento() {
     alert("Ocurrió un error al conectar con el servidor.");
   }
 }
+
+(() => {
+document.getElementById('seleccionKit').style.display = this.checked ? 'block' : 'none';
+cargarDepartamentosEnSelect();
+})();
 

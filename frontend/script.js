@@ -69,5 +69,3 @@ if (logoNegocio) {
   const logoElemento = document.getElementById('logoNegocioSidebar');
   if (logoElemento) logoElemento.src = logoNegocio;
 }
-
-

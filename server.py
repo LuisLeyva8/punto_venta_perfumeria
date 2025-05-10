@@ -324,6 +324,81 @@ def modificar_departamento(id):
         return jsonify({'message': f'Error: {str(e)}'}), 500
 
 
+from datetime import datetime
+
+@app.route('/clientes', methods=['POST'])
+def registrar_cliente():
+    try:
+        nombre = request.form.get('nombre')
+        telefono = request.form.get('telefono')
+        correo = request.form.get('correo')
+        descuento = request.form.get('descuento', 0)
+        monto_minimo = request.form.get('monto_minimo_mensual', 0)
+        foto = request.files.get('foto')
+
+        # Convertir a tipos adecuados
+        descuento = float(descuento)
+        monto_minimo = float(monto_minimo)
+        foto_binario = foto.read() if foto else None
+
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+
+        query = """
+            INSERT INTO clientes (
+                nombre_completo, telefono, saldo_actual,
+                monto_minimo_mensual, descuento, foto
+            )
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (
+            nombre, telefono, 0.0,
+            monto_minimo, descuento, foto_binario
+        ))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Cliente registrado exitosamente'}), 201
+
+    except Exception as e:
+        print("Error al registrar cliente:", e)
+        return jsonify({'message': f'Error: {str(e)}'}), 500
+
+
+from flask import jsonify
+import base64
+
+
+@app.route('/clientes', methods=['GET'])
+def obtener_clientes():
+    try:
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("""
+            SELECT id, nombre_completo, telefono, descuento, saldo_actual,
+                   suscripcion_activa, monto_minimo_mensual, fecha_ultima_compra, foto
+            FROM clientes
+        """)
+        clientes = cursor.fetchall()
+        cursor.close()
+        connection.close()
+
+        for cliente in clientes:
+            try:
+                if cliente["foto"]:
+                    cliente["foto"] = base64.b64encode(cliente["foto"]).decode("utf-8")
+                else:
+                    cliente["foto"] = None
+            except Exception as fe:
+                print(f"Error procesando foto del cliente {cliente['id']}: {fe}")
+                cliente["foto"] = None
+
+        return jsonify(clientes), 200
+    except Exception as e:
+        print("🔥 Error en /clientes:", e)
+        return jsonify({'message': f'Error interno: {str(e)}'}), 500
 
 
 
