@@ -4,25 +4,28 @@
 <section class="panel-corte">
   <h2>Corte de Caja</h2>
   <div class="acciones-corte">
-    <button class="btn-principal">Hacer corte de hoy</button>
+    <button class="btn-principal" onclick="actualizar()">Hacer corte de hoy</button>
     <button class="btn-secundario">Imprimir Corte</button>
   </div>
 
   <div class="grid-corte">
     <div class="bloque">
-      <h3>Entradas de Efectivo</h3>
-      <p>Entrada de Dinero (Cambio): <strong>$0.00</strong></p>
-      <p>Dinero Inicial en Caja: <strong>$0.00</strong></p>
-      <p class="total">Total: <strong>$0.00</strong></p>
-    </div>
+  <h3>Entradas y Salidas de Efectivo</h3>
+  <p>Entrada de Dinero (Cambio): <strong>$0.00</strong></p>
+  <p>Salida de Dinero (Cambio): <strong>$0.00</strong></p>
+  <p>Dinero Inicial en Caja: <strong>$0.00</strong></p>
+  <p class="total">Total: <strong>$0.00</strong></p>
+</div>
+
 
     <div class="bloque">
-      <h3>Dinero en Caja</h3>
-      <p>Ventas en efectivo: <strong>+ $0.00</strong></p>
-      <p>Entradas: <strong>+ $0.00</strong></p>
-      <p>Pago a Proveedores: <strong>- $0.00</strong></p>
-      <p class="total">Total: <strong>$0.00</strong></p>
-    </div>
+  <h3>Dinero en Caja</h3>
+  <p>Ventas en efectivo: <strong>+ $0.00</strong></p>
+  <p>Ventas con tarjeta de crédito/débito: <strong>+ $0.00</strong></p>
+  <p>Entradas y salidas (total): <strong>+ $0.00</strong></p>
+  <p>Pago a Proveedores: <strong>- $0.00</strong></p>
+  <p class="total">Total: <strong>$0.00</strong></p>
+</div>
 
     <div class="bloque">
       <h3>Pagos de contado</h3>
@@ -33,22 +36,20 @@
 
     <div class="bloque">
       <h3>Ventas por Departamento</h3>
-      <p>(Gráfica o tabla aquí)</p>
+      <canvas id="graficaDepartamentos"></canvas>
     </div>
   </div>
 
   <div class="resumen-final">
-    <p>Pagos de Clientes: <strong>$0.00</strong></p>
-    <p>Pagos a Proveedores: <strong>$0.00</strong></p>
-
-    <div class="totales-finales">
-      <p>Ventas Totales: <strong class="monto">$0.00</strong></p>
-      <p>Ganancia del día: <strong class="monto">$0.00</strong></p>
-      <small>(Precio de Venta - Precio de Costo - Impuestos) x Cantidad Vendida</small>
-    </div>
+  <p>Pagos de Clientes: <strong id="pagos-clientes">$0.00</strong></p>
+  <p>Pagos a Proveedores: <strong id="pagos-proveedores">$0.00</strong></p>
+</div>
+<div class="totales-finales">
+    <p>Ventas Totales: <strong id="ventas-totales" class="monto">$0.00</strong></p>
+    <p>Ganancia del día: <strong id="ganancia-dia" class="monto">$0.00</strong></p>
   </div>
+
 </section>
 
-<style>
-
-</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/frontend/js/corte.js"></script>

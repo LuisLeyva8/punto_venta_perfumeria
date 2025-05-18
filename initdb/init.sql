@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS corte_caja (
     usuario VARCHAR(100),
     dinero_inicial DECIMAL(10,2),
     entrada_dinero DECIMAL(10,2),
+    salida_dinero DECIMAL(10,2),
     ventas_efectivo DECIMAL(10,2),
     ventas_tarjeta DECIMAL(10,2),
     pagos_clientes DECIMAL(10,2),
@@ -156,8 +157,31 @@ INSERT INTO detalle_ventas (id_venta, id_producto, cantidad, precio_unitario, to
 (3, 3, 1, 95.00, 95.00);
 
 -- Insertar datos en corte_caja
-INSERT INTO corte_caja (fecha, usuario, dinero_inicial, entrada_dinero, ventas_efectivo, ventas_tarjeta, pagos_clientes, pagos_proveedores, total_en_caja, ganancias) VALUES
-('2025-04-26', 'admin', 1000.00, 500.00, 395.00, 140.00, 300.00, 150.00, 2185.00, 485.00);
+INSERT INTO corte_caja (
+    fecha,
+    usuario,
+    dinero_inicial,
+    entrada_dinero,
+    salida_dinero,
+    ventas_efectivo,
+    ventas_tarjeta,
+    pagos_clientes,
+    pagos_proveedores,
+    total_en_caja,
+    ganancias
+) VALUES (
+    '2025-04-26',
+    'admin',
+    1000.00,
+    500.00,
+    395.00,
+    140.00,
+    300.00,
+    150.00,
+    0.00,
+    2185.00,
+    485.00
+);
 
 
 -- Insertar datos en clientes
@@ -186,6 +210,13 @@ VALUES
 ('Camila Morales', '5558899001', 9.50, 130.00, true, 95.00, '2025-04-20', NULL),
 ('Andrés Medina', '5559900112', 0.00, 0.00, false, 0.00, '2025-01-01', NULL),
 ('Valentina León', '5551011123', 4.00, 90.00, true, 85.00, '2025-03-17', NULL);
+
+INSERT INTO departamentos (nombre) VALUES
+('Perfumería'),
+('Belleza'),
+('Hogar'),
+('Oficina'),
+('Aromas');
 
 -- 🔥 Activar validación de Foreign Keys nuevamente
 SET FOREIGN_KEY_CHECKS=1;

@@ -1,3 +1,4 @@
+
 const inputCodigo = document.getElementById('codigo');
 const botonAgregar = document.getElementById('agregarProducto');
 const tablaListaVenta = document.getElementById('lista-venta');
@@ -28,17 +29,6 @@ async function agregarProductoATabla() {
   inputCodigo.focus();
 }
 
-// Abrir el modal INS
-function abrirModalINS() {
-  document.getElementById('modalINS').style.display = 'block';
-}
-
-// Cerrar el modal INS
-function cerrarModalINS() {
-  document.getElementById('modalINS').style.display = 'none';
-  document.getElementById('codigoINS').value = '';
-  document.getElementById('cantidadINS').value = 1;
-}
 
 // Confirmar carga por INS
 async function confirmarINS() {
@@ -150,11 +140,6 @@ inputCodigo.addEventListener('keydown', function (event) {
 });
 
 
-
-
-
-
-
 // Abrir el modal Producto Común
 function abrirModalComun() {
   document.getElementById('modalComun').style.display = 'block';
@@ -193,25 +178,9 @@ function confirmarComun() {
 }
 
 
-
-
-
-
-
-
 let productoSeleccionado = null;
 let filaSeleccionada = null; // NUEVA VARIABLE
 
-function abrirModalBuscar() {
-  document.getElementById('modalBuscar').style.display = 'block';
-  document.getElementById('inputBuscarDescripcion').value = '';
-  document.getElementById('tablaResultadosBuscar').querySelector('tbody').innerHTML = '';
-  productoSeleccionado = null;
-}
-
-function cerrarModalBuscar() {
-  document.getElementById('modalBuscar').style.display = 'none';
-}
 // Buscar productos mientras escribe
 async function buscarProductosPorDescripcion() {
   const texto = document.getElementById('inputBuscarDescripcion').value.trim();
@@ -269,6 +238,38 @@ function aceptarProductoBusqueda() {
 
   agregarOActualizarProducto(productoSeleccionado, 1);
   cerrarModalBuscar();
+}
+
+
+function renderTicket() {
+  const lista = document.getElementById("lista-venta");
+  lista.innerHTML = "";
+
+  const productos = tickets[currentTicket].productos;
+
+  if (productos.length === 0) {
+    document.getElementById("mensajeVacio").style.display = "block";
+  } else {
+    document.getElementById("mensajeVacio").style.display = "none";
+    productos.forEach(prod => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${prod.codigo}</td>
+        <td>${prod.descripcion}</td>
+        <td>$${prod.precio.toFixed(2)}</td>
+        <td>
+          <button class="btn-cantidad" onclick="*(this, -1)">-</button>
+          <span class="cantidad">${prod.cantidad}</span>
+          <button class="btn-cantidad" onclick="*(this, 1)">+</button>
+        </td>
+        <td>$${(prod.precio * prod.cantidad).toFixed(2)}</td>
+        <td>${prod.existencia}</td>
+      `;
+      lista.appendChild(row);
+
+      validarExistencia(row, prod.cantidad, prod.existencia);
+    });
+  }
 }
 
 // Permitir seleccionar filas en la tabla de ventas
@@ -423,47 +424,18 @@ function cerrarModalCaja() {
   document.getElementById("modalCaja").style.display = "none";
 }
 
-async function confirmarMovimientoCaja() {
-  const cantidad = parseFloat(document.getElementById("cantidadCaja").value);
-
-  if (isNaN(cantidad) || cantidad <= 0) {
-    document.getElementById("mensajeCaja").textContent = "Ingrese una cantidad válida.";
-    return;
-  }
-
-  if (tipoMovimiento === "salida" && cantidad > dineroActual) {
-    document.getElementById("mensajeCaja").textContent = "No hay suficiente dinero en caja.";
-    return;
-  }
-
-  const ruta = tipoMovimiento === "entrada"
-    ? "http://127.0.0.1:3000/entrada"
-    : "http://127.0.0.1:3000/salida";
-
-  try {
-    const respuesta = await fetch(ruta, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cantidad: cantidad, usuario: usuarioActual })
-    });
-
-    const data = await respuesta.json();
-
-    document.getElementById("mensajeCaja").style.color = "green";
-    document.getElementById("mensajeCaja").textContent = data.mensaje;
-    setTimeout(cerrarModalCaja, 1500);
-  } catch (error) {
-    console.error("Error al confirmar movimiento:", error);
-    document.getElementById("mensajeCaja").style.color = "red";
-    document.getElementById("mensajeCaja").textContent = "Error al registrar el movimiento.";
-  }
-}
-
 
 let tickets = [];
 let currentTicket = 0;
-let ticketCounter = 1; // No se reinicia, asegura numeración continua
+let ticketCounter = 1;
 
+// ✅ Inicializa el primer ticket por defecto
+function inicializarTicketPorDefecto() {
+  if (tickets.length === 0) {
+    addTicket();
+    console.log("🧾 Ticket por defecto creado.");
+  }
+}
 
 function addTicket() {
   const ticket = {
@@ -484,23 +456,6 @@ function addTicket() {
 
   switchTicket(index);
 }
-/*
-function switchTicket(index) {
-  currentTicket = index;
-  renderTicket();
-
-  const ticket = tickets[index];
-  const titulo = document.getElementById("titulo-ticket");
-  if (titulo) {
-    titulo.textContent = `VENTA DE PRODUCTOS - Ticket ${ticket.numero}`;
-  }
-
-  document.querySelectorAll(".tab-button").forEach((btn, i) => {
-    btn.classList.toggle("active", i === index);
-  });
-}*/
-
-
 
 function switchTicket(index) {
   currentTicket = index;
@@ -515,38 +470,18 @@ function switchTicket(index) {
 }
 
 
+function switchTicket(index) {
+  currentTicket = index;
+  renderTicket();
 
+  const ticket = tickets[index];
+  document.getElementById("titulo-ticket").textContent = `VENTA DE PRODUCTOS - Ticket ${ticket.numero}`;
 
-function renderTicket() {
-  const lista = document.getElementById("lista-venta");
-  lista.innerHTML = "";
-
-  const productos = tickets[currentTicket].productos;
-
-  if (productos.length === 0) {
-    document.getElementById("mensajeVacio").style.display = "block";
-  } else {
-    document.getElementById("mensajeVacio").style.display = "none";
-    productos.forEach(prod => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${prod.codigo}</td>
-        <td>${prod.descripcion}</td>
-        <td>$${prod.precio.toFixed(2)}</td>
-        <td>
-          <button class="btn-cantidad" onclick="cambiarCantidadDesdeFila(this, -1)">-</button>
-          <span class="cantidad">${prod.cantidad}</span>
-          <button class="btn-cantidad" onclick="cambiarCantidadDesdeFila(this, 1)">+</button>
-        </td>
-        <td>$${(prod.precio * prod.cantidad).toFixed(2)}</td>
-        <td>${prod.existencia}</td>
-      `;
-      lista.appendChild(row);
-
-      validarExistencia(row, prod.cantidad, prod.existencia);
-    });
-  }
+  document.querySelectorAll(".tab-button").forEach((btn, i) => {
+    btn.classList.toggle("active", i === index);
+  });
 }
+
 
 function agregarProductoAlTicket(prod) {
   tickets[currentTicket].push(prod);
@@ -606,7 +541,8 @@ function agregarOActualizarProducto(producto, cantidadAgregar) {
   renderTicket();
 }
 
-function cambiarCantidadDesdeFila(boton, cambio) {
+
+function cambiarCantidadDesdeTicket(boton, cambio) {
   const fila = boton.closest("tr");
   const codigo = fila.cells[0].textContent.trim();
   const productos = tickets[currentTicket].productos;
@@ -620,11 +556,210 @@ function cambiarCantidadDesdeFila(boton, cambio) {
 }
 
 
-(() => {
-addTicket();
-console.log("Ticket 1 generado al cargar.");
-cerrarModalBuscar();
-cerrarModalCaja();
-cerrarModalINS();
-cerrarModalComun();
+function actualizarTituloTicket() {
+  const titulo = document.getElementById("titulo-ticket");
+  if (titulo) {
+    titulo.textContent = `VENTA DE PRODUCTOS - Ticket ${currentTicket + 1}`;
+  }
+}
+
+function renderTodosLosTickets() {
+  const contenedor = document.getElementById("lista-tickets");
+  if (!contenedor) {
+    console.warn("⚠️ No se encontró el contenedor #lista-tickets");
+    return;
+  }
+
+  contenedor.innerHTML = ""; // Limpiar lista anterior
+
+  if (tickets.length === 0) {
+    contenedor.innerHTML = "<p>No hay tickets registrados.</p>";
+    return;
+  }
+
+  tickets.forEach((ticket, ticketIndex) => {
+    const section = document.createElement("div");
+    section.classList.add("ticket-detalle");
+    section.innerHTML = `<h3>🧾 Ticket ${ticketIndex + 1}</h3>`;
+
+    const tabla = document.createElement("table");
+    tabla.innerHTML = `
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Cantidad</th>
+          <th>Total</th>
+          <th>Existencia</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
+
+    const tbody = tabla.querySelector("tbody");
+
+    if (ticket.productos.length === 0) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td colspan="6" style="text-align:center;">Ticket vacío</td>`;
+      tbody.appendChild(row);
+    } else {
+      ticket.productos.forEach(prod => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${prod.codigo}</td>
+          <td>${prod.descripcion}</td>
+          <td>$${prod.precio.toFixed(2)}</td>
+          <td>${prod.cantidad}</td>
+          <td>$${(prod.precio * prod.cantidad).toFixed(2)}</td>
+          <td>${prod.existencia}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    section.appendChild(tabla);
+    contenedor.appendChild(section);
+  });
+}
+
+// Funciones de mayoreo
+async function aplicarMayoreo() {
+  const filas = tablaListaVenta.getElementsByTagName('tr');
+  const filasSeleccionadas = Array.from(filas).filter(fila => fila.classList.contains('seleccionado'));
+  const filasATrabajar = filasSeleccionadas.length > 0 ? filasSeleccionadas : filas;
+
+  for (let fila of filasATrabajar) {
+    const codigo = fila.cells[0].textContent.trim();
+    if (codigo === '0') continue;
+
+    const precioCell = fila.cells[2];
+    const importeCell = fila.cells[4];
+    const spanCantidad = fila.querySelector('.cantidad');
+    const cantidad = parseInt(spanCantidad.textContent);
+
+    if (!fila.dataset.precioOriginal) {
+      fila.dataset.precioOriginal = parseFloat(precioCell.textContent.replace('$', ''));
+    }
+
+    if (modoMayoreo) {
+      const precioOriginal = parseFloat(fila.dataset.precioOriginal);
+      precioCell.innerHTML = `$${precioOriginal.toFixed(2)}`;
+      importeCell.textContent = `$${(precioOriginal * cantidad).toFixed(2)}`;
+      fila.classList.remove('descuento-mayoreo');
+    } else {
+      try {
+        const respuesta = await fetch(`http://127.0.0.1:3000/buscar-mayoreo/${codigo}`);
+        const producto = await respuesta.json();
+        if (producto.error || producto.precio_mayoreo === null) continue;
+        const precioMayoreo = parseFloat(producto.precio_mayoreo);
+        precioCell.innerHTML = `
+          <div>$${precioMayoreo.toFixed(2)}</div>
+          <small style="color: gray; text-decoration: line-through;">$${parseFloat(fila.dataset.precioOriginal).toFixed(2)}</small>
+        `;
+        importeCell.textContent = `$${(precioMayoreo * cantidad).toFixed(2)}`;
+        fila.classList.add('descuento-mayoreo');
+      } catch (error) {
+        console.error(`Error buscando precio mayoreo para ${codigo}:`, error);
+      }
+    }
+  }
+  modoMayoreo = !modoMayoreo;
+}
+
+// Modales
+function abrirModalBuscar() {
+  document.getElementById('modalBuscar').style.display = 'block';
+  document.getElementById('inputBuscarDescripcion').value = '';
+  document.getElementById('tablaResultadosBuscar').querySelector('tbody').innerHTML = '';
+  productoSeleccionado = null;
+}
+
+function cerrarModalBuscar() {
+  document.getElementById('modalBuscar').style.display = 'none';
+}
+
+function abrirModalINS() {
+  document.getElementById('modalINS').style.display = 'block';
+}
+
+function cerrarModalINS() {
+  document.getElementById('modalINS').style.display = 'none';
+  document.getElementById('codigoINS').value = '';
+  document.getElementById('cantidadINS').value = 1;
+}
+
+function abrirModalComun() {
+  document.getElementById('modalComun').style.display = 'block';
+}
+
+function cerrarModalComun() {
+  document.getElementById('modalComun').style.display = 'none';
+  document.getElementById('descripcionComun').value = '';
+  document.getElementById('cantidadComun').value = 1;
+  document.getElementById('precioComun').value = 0.00;
+}
+
+function abrirModalCaja(tipo) {
+  tipoMovimiento = tipo;
+  document.getElementById("tituloModalCaja").textContent = tipo === "entrada" ? "Entrada de Dinero" : "Salida de Dinero";
+  document.getElementById("cantidadCaja").value = "";
+  document.getElementById("mensajeCaja").textContent = "";
+
+  fetch(`http://127.0.0.1:3000/dinero-en-caja?usuario=${usuarioActual}`)
+    .then(res => res.json())
+    .then(data => {
+      dineroActual = data.total_en_caja;
+      document.getElementById("dineroActualCaja").textContent = `Dinero actual en caja: $${dineroActual.toFixed(2)}`;
+      document.getElementById("modalCaja").style.display = "flex";
+    })
+    .catch(err => {
+      console.error("Error al obtener dinero en caja:", err);
+      document.getElementById("mensajeCaja").textContent = "Error al obtener dinero actual.";
+      document.getElementById("modalCaja").style.display = "flex";
+    });
+}
+
+function cerrarModalCaja() {
+  document.getElementById("modalCaja").style.display = "none";
+}
+
+async function confirmarMovimientoCaja() {
+  const cantidad = parseFloat(document.getElementById("cantidadCaja").value);
+  if (isNaN(cantidad) || cantidad <= 0) {
+    document.getElementById("mensajeCaja").textContent = "Ingrese una cantidad válida.";
+    return;
+  }
+  if (tipoMovimiento === "salida" && cantidad > dineroActual) {
+    document.getElementById("mensajeCaja").textContent = "No hay suficiente dinero en caja.";
+    return;
+  }
+  const ruta = tipoMovimiento === "entrada"
+    ? "http://127.0.0.1:3000/entrada"
+    : "http://127.0.0.1:3000/salida";
+  try {
+    const respuesta = await fetch(ruta, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cantidad: cantidad, usuario: usuarioActual })
+    });
+    const data = await respuesta.json();
+    document.getElementById("mensajeCaja").style.color = "green";
+    document.getElementById("mensajeCaja").textContent = data.mensaje;
+    setTimeout(cerrarModalCaja, 1);
+  } catch (error) {
+    console.error("Error al confirmar movimiento:", error);
+    document.getElementById("mensajeCaja").style.color = "red";
+    document.getElementById("mensajeCaja").textContent = "Error al registrar el movimiento.";
+  }
+}
+
+(function () {
+  inicializarTicketPorDefecto();
+  cerrarModalBuscar();
+  cerrarModalCaja();
+  cerrarModalINS();
+  cerrarModalComun();
+  renderTicket();
+  console.log("🟢 Pantalla de ventas lista");
 })();

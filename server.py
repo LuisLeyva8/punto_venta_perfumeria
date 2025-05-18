@@ -119,23 +119,42 @@ def buscar_mayoreo(codigo):
         return jsonify({"error": "Error interno en servidor"}), 500
 
 
+from datetime import date
+
 @app.route('/entrada', methods=['POST'])
 def entrada_dinero():
     try:
         data = request.json
         cantidad = float(data['cantidad'])
         usuario = data.get('usuario', 'admin')
+        fecha = data.get('fecha', str(date.today()))
 
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor()
 
+        # Verificar si existe el corte
         cursor.execute("""
-            UPDATE corte_caja 
+            SELECT id FROM corte_caja WHERE usuario = %s AND fecha = %s
+        """, (usuario, fecha))
+        result = cursor.fetchone()
+
+        if not result:
+            cursor.execute("""
+                INSERT INTO corte_caja (
+                    fecha, usuario, dinero_inicial, entrada_dinero, salida_dinero,
+                    ventas_efectivo, ventas_tarjeta, pagos_clientes,
+                    pagos_proveedores, total_en_caja, ganancias
+                ) VALUES (%s, %s, 0,  0, 0, 0, 0, 0, 0, 0, 0)
+            """, (fecha, usuario))
+
+        # Actualizar entrada_dinero y total_en_caja
+        cursor.execute("""
+            UPDATE corte_caja
             SET entrada_dinero = entrada_dinero + %s,
                 total_en_caja = total_en_caja + %s
-            WHERE usuario = %s
-        """, (cantidad, cantidad, usuario))
-        
+            WHERE usuario = %s AND fecha = %s
+        """, (cantidad, cantidad, usuario, fecha))
+
         conn.commit()
         conn.close()
 
@@ -144,22 +163,42 @@ def entrada_dinero():
         print("🚨 Error en /entrada:", str(e))
         return jsonify({'error': 'Error interno en entrada'}), 500
 
+
+
 @app.route('/salida', methods=['POST'])
 def salida_dinero():
     try:
         data = request.json
         cantidad = float(data['cantidad'])
         usuario = data.get('usuario', 'admin')
+        fecha = data.get('fecha', str(date.today()))
 
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor()
 
+        # Verificar si existe el corte
         cursor.execute("""
-            UPDATE corte_caja 
-            SET total_en_caja = total_en_caja - %s
-            WHERE usuario = %s
-        """, (cantidad, usuario))
-        
+            SELECT id FROM corte_caja WHERE usuario = %s AND fecha = %s
+        """, (usuario, fecha))
+        result = cursor.fetchone()
+
+        if not result:
+            cursor.execute("""
+                INSERT INTO corte_caja (
+                    fecha, usuario, dinero_inicial, entrada_dinero, salida_dinero,
+                    ventas_efectivo, ventas_tarjeta, pagos_clientes,
+                    pagos_proveedores, total_en_caja, ganancias
+                ) VALUES (%s, %s, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+            """, (fecha, usuario))
+
+        # Actualizar salida_dinero y total_en_caja
+        cursor.execute("""
+            UPDATE corte_caja
+            SET salida_dinero = salida_dinero + %s,
+                total_en_caja = total_en_caja - %s
+            WHERE usuario = %s AND fecha = %s
+        """, (cantidad, cantidad, usuario, fecha))
+
         conn.commit()
         conn.close()
 
@@ -168,19 +207,63 @@ def salida_dinero():
         print("🚨 Error en /salida:", str(e))
         return jsonify({'error': 'Error interno en salida'}), 500
 
+
+
+from datetime import datetime, date
+
 @app.route('/dinero-en-caja')
 def dinero_en_caja():
     try:
         usuario = request.args.get("usuario", "admin")
+        fecha_str = request.args.get("fecha")  # formato esperado: YYYY-MM-DD
+
+        # Usar la fecha recibida o la de hoy si no hay parámetro
+        if fecha_str:
+            try:
+                fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            except ValueError:
+                return jsonify({'error': 'Fecha con formato inválido. Use YYYY-MM-DD'}), 400
+        else:
+            fecha = date.today()
+
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("SELECT total_en_caja FROM corte_caja WHERE usuario = %s", (usuario,))
+
+        # Consultar corte existente
+        cursor.execute("""
+            SELECT total_en_caja 
+            FROM corte_caja 
+            WHERE usuario = %s AND fecha = %s
+        """, (usuario, fecha))
+        
         result = cursor.fetchone()
+
+        # Crear el registro si no existe
+        if not result:
+            cursor.execute("""
+                INSERT INTO corte_caja (
+                    fecha, usuario, dinero_inicial, entrada_dinero, salida_dinero
+                    ventas_efectivo, ventas_tarjeta, pagos_clientes, 
+                    pagos_proveedores, total_en_caja, ganancias
+                ) VALUES (%s, %s, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+            """, (fecha, usuario))
+            conn.commit()
+
+            # Consultar nuevamente
+            cursor.execute("""
+                SELECT total_en_caja 
+                FROM corte_caja 
+                WHERE usuario = %s AND fecha = %s
+            """, (usuario, fecha))
+            result = cursor.fetchone()
+
         conn.close()
         return jsonify({'total_en_caja': float(result['total_en_caja']) if result else 0.0})
+
     except Exception as e:
         print("🚨 Error en /dinero-en-caja:", str(e))
         return jsonify({'error': 'Error al consultar dinero en caja'}), 500
+
 
 CORS(app)
 mysql = MySQL(app)
@@ -402,16 +485,137 @@ def obtener_clientes():
 
 
 
+@app.route('/producto/<codigo>', methods=['GET'])
+def obtener_producto_por_codigo(codigo):
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("SELECT descripcion, cantidad FROM productos WHERE codigo_barras = %s", (codigo,))
+        producto = cursor.fetchone()
+        conn.close()
+
+        if producto:
+            return jsonify({
+                'descripcion': producto[0],
+                'cantidad': float(producto[1])
+            })
+        else:
+            return jsonify({'error': 'Producto no encontrado'}), 404
+    except Exception as e:
+        print("🚨 Error en /producto:", str(e))
+        return jsonify({'error': 'Error interno'}), 500
+
+@app.route('/actualizar_inventario', methods=['POST'])
+def actualizar_inventario():
+    try:
+        data = request.json
+        codigo = data['codigo']
+        cantidad = float(data['cantidad'])
+
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE productos
+            SET cantidad = cantidad + %s
+            WHERE codigo_barras = %s
+        """, (cantidad, codigo))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({'status': 'ok', 'mensaje': 'Cantidad agregada correctamente'})
+    except Exception as e:
+        print("🚨 Error en /actualizar_inventario:", str(e))
+        return jsonify({'error': 'Error interno en inventario'}), 500
 
 
+from flask import jsonify
+from datetime import datetime, date
+
+@app.route('/corte_entradas', methods=['GET'])
+def obtener_entradas_corte():
+    try:
+        usuario = request.args.get("usuario", "admin")
+        fecha_str = request.args.get("fecha")
+        fecha = date.today()
+
+        if fecha_str:
+            try:
+                fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            except ValueError:
+                return jsonify({'error': 'Formato de fecha inválido. Use YYYY-MM-DD'}), 400
+
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT dinero_inicial, entrada_dinero, salida_dinero,
+                   ventas_efectivo, ventas_tarjeta, pagos_proveedores, total_en_caja,
+                   pagos_clientes, ganancias
+            FROM corte_caja
+            WHERE fecha = %s AND usuario = %s
+        """, (fecha, usuario))
+        datos = cursor.fetchone()
+        conn.close()
+
+        if datos:
+            (dinero_inicial, entrada_dinero, salida_dinero,
+             ventas_efectivo, ventas_tarjeta, pagos_proveedores,
+             total_en_caja, pagos_clientes, ganancias) = map(float, datos)
+        else:
+            dinero_inicial = entrada_dinero = salida_dinero = ventas_efectivo = 0.0
+            ventas_tarjeta = pagos_proveedores = total_en_caja = pagos_clientes = ganancias = 0.0
+
+        total_calculado = dinero_inicial + entrada_dinero + ventas_efectivo + ventas_tarjeta - salida_dinero - pagos_proveedores
+
+        return jsonify({
+            'dinero_inicial': dinero_inicial,
+            'entrada_dinero': entrada_dinero,
+            'salida_dinero': salida_dinero,
+            'ventas_efectivo': ventas_efectivo,
+            'ventas_tarjeta': ventas_tarjeta,
+            'pagos_proveedores': pagos_proveedores,
+            'total_en_caja': total_en_caja,
+            'total_calculado': total_calculado,
+            'diferencia_total': round(total_en_caja - total_calculado, 2),
+            'pagos_clientes': pagos_clientes,
+            'ganancias': ganancias
+        })
+
+    except Exception as e:
+        print("🚨 Error en /corte_entradas:", e)
+        return jsonify({'error': 'Error al obtener datos de corte'}), 500
 
 
+@app.route('/ventas_por_departamento', methods=['GET'])
+def obtener_ventas_por_departamento():
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
 
+        cursor.execute("""
+            SELECT p.departamento, SUM(dv.total) AS total_ventas
+            FROM detalle_ventas dv
+            JOIN ventas v ON dv.id_venta = v.id
+            JOIN productos p ON dv.id_producto = p.id
+            GROUP BY p.departamento
+            ORDER BY total_ventas DESC
+        """)
+        resultados = cursor.fetchall()
+        conn.close()
 
+        datos = []
+        for fila in resultados:
+            departamento = fila[0] if fila[0] else "Sin departamento"
+            total_ventas = float(fila[1])
+            datos.append({'departamento': departamento, 'total_ventas': total_ventas})
+        print(jsonify(datos))
+        return jsonify(datos)
 
-
-
-
+    except Exception as e:
+        print("🚨 Error en /ventas_por_departamento:", e)
+        return jsonify({'error': 'Error al obtener ventas por departamento'}), 500
 
 
 
